@@ -7,6 +7,7 @@ import statsRouter from "./stats";
 import webhookRouter from "./webhook";
 import portalRouter from "./portal";
 import guestRouter from "./guest";
+import paymentsRouter from "./payments";
 
 const router: IRouter = Router();
 
@@ -18,5 +19,6 @@ router.use(statsRouter);
 router.use(webhookRouter);
 router.use("/portal", portalRouter);
 router.use(guestRouter);
+router.use("/portal", paymentsRouter);
 
 export default router;

@@ -125,6 +125,7 @@ portalRouter.post("/orders", async (req: AuthenticatedRequest, res) => {
       return;
     }
     const total = items.reduce((sum: number, item: { quantity: number; unitPrice: number }) => sum + item.quantity * item.unitPrice, 0);
+    const isCardPayment = paymentMethod === "IZIPAY_CARD";
     const [order] = await db
       .insert(ordersTable)
       .values({
@@ -136,8 +137,8 @@ portalRouter.post("/orders", async (req: AuthenticatedRequest, res) => {
         deliveryAddress: deliveryAddress ?? null,
         deliveryType: deliveryType ?? "delivery",
         paymentMethod: paymentMethod ?? "CASH_ON_DELIVERY",
-        paymentStatus: paymentMethod === "CASH_ON_DELIVERY" ? "PENDING" : "PENDING",
-        status: "RECIBIDO",
+        paymentStatus: isCardPayment ? "AWAITING_PAYMENT" : "PENDING",
+        status: isCardPayment ? "RECIBIDO" : "RECIBIDO",
         total,
         notes: notes ?? null,
       })

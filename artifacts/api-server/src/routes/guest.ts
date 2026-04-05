@@ -43,7 +43,7 @@ guestRouter.post("/guest/orders", async (req, res) => {
       res.status(400).json({ error: "Dirección requerida para delivery" });
       return;
     }
-    const validPayments = ["YAPE_PLIN", "BANK_TRANSFER", "CASH_ON_DELIVERY"];
+    const validPayments = ["YAPE_PLIN", "BANK_TRANSFER", "CASH_ON_DELIVERY", "IZIPAY_CARD"];
     if (!paymentMethod || !validPayments.includes(paymentMethod)) {
       res.status(400).json({ error: "Método de pago inválido" });
       return;
