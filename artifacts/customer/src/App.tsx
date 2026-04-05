@@ -79,6 +79,7 @@ import MyOrdersPage from "@/pages/my-orders";
 import OrderDetailPage from "@/pages/order-detail";
 import ProfilePage from "@/pages/profile";
 import AddressesPage from "@/pages/addresses";
+import Chatbot from "@/components/chatbot";
 
 function HomeLazy() {
   return <HomePage />;
@@ -111,6 +112,7 @@ function ClerkProviderWithRoutes() {
         <CartProvider>
           <TooltipProvider>
             <ClerkQueryClientCacheInvalidator />
+            <Chatbot />
             <Switch>
               <Route path="/" component={HomeRedirect} />
               <Route path="/sign-in/*?" component={SignInPage} />
