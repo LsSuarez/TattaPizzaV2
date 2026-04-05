@@ -7,21 +7,31 @@ import DashboardPage from "@/pages/dashboard";
 import OrdersPage from "@/pages/orders";
 import MenuPage from "@/pages/menu";
 import CustomersPage from "@/pages/customers";
+import CocinaPage from "@/pages/cocina";
+import RepartidorPage from "@/pages/repartidor";
 import { Shell } from "@/components/shell";
 
 const queryClient = new QueryClient();
 
 function Router() {
   return (
-    <Shell>
-      <Switch>
-        <Route path="/" component={DashboardPage} />
-        <Route path="/orders" component={OrdersPage} />
-        <Route path="/menu" component={MenuPage} />
-        <Route path="/customers" component={CustomersPage} />
-        <Route component={NotFound} />
-      </Switch>
-    </Shell>
+    <Switch>
+      {/* Standalone role views — no sidebar */}
+      <Route path="/cocina" component={CocinaPage} />
+      <Route path="/repartidor" component={RepartidorPage} />
+      {/* Admin views — with sidebar */}
+      <Route>
+        <Shell>
+          <Switch>
+            <Route path="/" component={DashboardPage} />
+            <Route path="/orders" component={OrdersPage} />
+            <Route path="/menu" component={MenuPage} />
+            <Route path="/customers" component={CustomersPage} />
+            <Route component={NotFound} />
+          </Switch>
+        </Shell>
+      </Route>
+    </Switch>
   );
 }
 
