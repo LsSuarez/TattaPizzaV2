@@ -1,0 +1,495 @@
+{
+  "name": "Tata Pizza - WhatsApp Chatbot con IA",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "whatsapp-tata-pizza",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-whatsapp",
+      "name": "WhatsApp Webhook (Meta)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [240, 300],
+      "webhookId": "tata-pizza-whatsapp"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "verify-challenge",
+              "leftValue": "={{ $json.query['hub.mode'] }}",
+              "rightValue": "subscribe",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "check-verification",
+      "name": "¿Es verificación de Meta?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.query['hub.challenge'] }}",
+        "options": {}
+      },
+      "id": "respond-verification",
+      "name": "Responder Verificación",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [680, 160]
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $input.first().json.body;\nconst entry = body?.entry?.[0];\nconst changes = entry?.changes?.[0];\nconst value = changes?.value;\nconst message = value?.messages?.[0];\n\nif (!message) {\n  return [{ json: { skip: true } }];\n}\n\nconst from = message.from;\nconst messageId = message.id;\nconst text = message.text?.body || '';\nconst timestamp = message.timestamp;\n\nconst contact = value?.contacts?.[0];\nconst customerName = contact?.profile?.name || 'Cliente';\n\nreturn [{\n  json: {\n    from,\n    messageId,\n    text,\n    timestamp,\n    customerName,\n    skip: false\n  }\n}];"
+      },
+      "id": "extract-message",
+      "name": "Extraer Mensaje WhatsApp",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 400]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "skip-check",
+              "leftValue": "={{ $json.skip }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "check-skip",
+      "name": "¿Mensaje válido?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [900, 400]
+    },
+    {
+      "parameters": {
+        "url": "={{ $env.TATA_PIZZA_API_URL }}/api/customers",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "phone",
+              "value": "={{ $('Extraer Mensaje WhatsApp').item.json.from }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "get-customer",
+      "name": "Buscar Cliente Existente",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1120, 280]
+    },
+    {
+      "parameters": {
+        "url": "={{ $env.TATA_PIZZA_API_URL }}/api/menu",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "available",
+              "value": "true"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "get-menu",
+      "name": "Obtener Menú Disponible",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1120, 460]
+    },
+    {
+      "parameters": {
+        "jsCode": "const menu = $('Obtener Menú Disponible').item.json;\nconst pizzas = menu.filter(i => i.category === 'pizza');\nconst bebidas = menu.filter(i => i.category === 'bebida');\n\nconst formatPrice = (cents) => cents ? `S/.${(cents/100).toFixed(0)}` : null;\n\nconst menuText = `\nPIZZAS:\n${pizzas.map(p => `- ${p.name}${p.description ? ' (' + p.description + ')' : ''}: Pequeña ${formatPrice(p.priceSmall) || 'N/A'} | Mediana ${formatPrice(p.priceMedium) || 'N/A'} | Grande ${formatPrice(p.priceLarge) || 'N/A'}`).join('\\n')}\n\nBEBIDAS:\n${bebidas.map(b => `- ${b.name}: ${formatPrice(b.priceSmall)}`).join('\\n')}\n`;\n\nconst customers = $('Buscar Cliente Existente').item.json;\nconst isExistingCustomer = Array.isArray(customers) && customers.length > 0;\nconst customer = isExistingCustomer ? customers[0] : null;\n\nreturn [{\n  json: {\n    menuText,\n    isExistingCustomer,\n    customerAddress: customer?.address || null,\n    customerName: $('Extraer Mensaje WhatsApp').item.json.customerName\n  }\n}];"
+      },
+      "id": "prepare-context",
+      "name": "Preparar Contexto para IA",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1340, 380]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o-mini",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "Eres el asistente virtual de Tata Pizza, una pizzería de Lima, Perú. Eres amable, eficiente y hablas en español peruano casual.\n\nMENÚ ACTUAL:\n{{ $('Preparar Contexto para IA').item.json.menuText }}\n\nCLIENTE: {{ $('Preparar Contexto para IA').item.json.customerName }}\n{{ $('Preparar Contexto para IA').item.json.isExistingCustomer ? 'Cliente frecuente. Dirección guardada: ' + $('Preparar Contexto para IA').item.json.customerAddress : 'Cliente nuevo.' }}\n\nTU TRABAJO:\n1. Ayudar al cliente a hacer su pedido de manera conversacional\n2. Cuando el pedido esté completo, extraer la información estructurada\n3. Confirmar la dirección de entrega (o recojo en tienda)\n4. Siempre ser breve y directo\n\nCuando el pedido esté CONFIRMADO Y COMPLETO, responde con este JSON exacto (sin más texto):\n```json\n{\n  \"tipo\": \"PEDIDO_CONFIRMADO\",\n  \"items\": [{\"name\": \"Pepperoni\", \"size\": \"Mediana\", \"quantity\": 1, \"unitPrice\": 3800}],\n  \"deliveryType\": \"delivery\",\n  \"deliveryAddress\": \"Av. Larco 123, Miraflores\",\n  \"notes\": \"sin aceitunas\",\n  \"total\": 3800,\n  \"mensajeCliente\": \"¡Perfecto! Tu pedido está confirmado. Pepperoni mediana por S/.38. Lo recibirás en 30-40 minutos.\"\n}\n```\n\nSi el cliente solo está preguntando o explorando el menú, responde normalmente en texto."
+            },
+            {
+              "role": "user",
+              "content": "={{ $('Extraer Mensaje WhatsApp').item.json.text }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ai-response",
+      "name": "IA - Chatbot Tata Pizza",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.4,
+      "position": [1560, 380]
+    },
+    {
+      "parameters": {
+        "jsCode": "const aiResponse = $input.first().json.message.content;\n\nlet parsedOrder = null;\nlet isConfirmedOrder = false;\nlet clientMessage = aiResponse;\n\n// Try to detect if AI returned a confirmed order JSON\ntry {\n  const jsonMatch = aiResponse.match(/```json([\\s\\S]*?)```/);\n  if (jsonMatch) {\n    const parsed = JSON.parse(jsonMatch[1].trim());\n    if (parsed.tipo === 'PEDIDO_CONFIRMADO') {\n      isConfirmedOrder = true;\n      parsedOrder = parsed;\n      clientMessage = parsed.mensajeCliente;\n    }\n  }\n} catch(e) {\n  // Not a JSON, it's a conversational response\n}\n\nreturn [{\n  json: {\n    isConfirmedOrder,\n    parsedOrder,\n    clientMessage,\n    from: $('Extraer Mensaje WhatsApp').item.json.from,\n    customerName: $('Extraer Mensaje WhatsApp').item.json.customerName,\n    messageId: $('Extraer Mensaje WhatsApp').item.json.messageId\n  }\n}];"
+      },
+      "id": "parse-ai-response",
+      "name": "Parsear Respuesta IA",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1780, 380]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "confirmed-check",
+              "leftValue": "={{ $json.isConfirmedOrder }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "check-confirmed",
+      "name": "¿Pedido Confirmado?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [2000, 380]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.TATA_PIZZA_API_URL }}/api/webhook/whatsapp",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "customerName",
+              "value": "={{ $('Parsear Respuesta IA').item.json.customerName }}"
+            },
+            {
+              "name": "customerPhone",
+              "value": "={{ $('Parsear Respuesta IA').item.json.from }}"
+            },
+            {
+              "name": "deliveryAddress",
+              "value": "={{ $('Parsear Respuesta IA').item.json.parsedOrder.deliveryAddress }}"
+            },
+            {
+              "name": "deliveryType",
+              "value": "={{ $('Parsear Respuesta IA').item.json.parsedOrder.deliveryType }}"
+            },
+            {
+              "name": "notes",
+              "value": "={{ $('Parsear Respuesta IA').item.json.parsedOrder.notes }}"
+            },
+            {
+              "name": "whatsappMessageId",
+              "value": "={{ $('Parsear Respuesta IA').item.json.messageId }}"
+            },
+            {
+              "name": "items",
+              "value": "={{ JSON.stringify($('Parsear Respuesta IA').item.json.parsedOrder.items) }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "create-order",
+      "name": "Crear Pedido en Tata Pizza",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2220, 240]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v18.0/{{ $env.WHATSAPP_PHONE_NUMBER_ID }}/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "contentType": "json",
+        "body": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $('Parsear Respuesta IA').item.json.from }}\",\n  \"type\": \"text\",\n  \"text\": {\n    \"body\": \"{{ $('Parsear Respuesta IA').item.json.clientMessage }}\"\n  }\n}",
+        "options": {}
+      },
+      "id": "send-whatsapp-confirmed",
+      "name": "Enviar Confirmación WhatsApp",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2440, 240],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "whatsapp-bearer-token",
+          "name": "WhatsApp Bearer Token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v18.0/{{ $env.WHATSAPP_PHONE_NUMBER_ID }}/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "contentType": "json",
+        "body": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $('Parsear Respuesta IA').item.json.from }}\",\n  \"type\": \"text\",\n  \"text\": {\n    \"body\": \"{{ $('Parsear Respuesta IA').item.json.clientMessage }}\"\n  }\n}",
+        "options": {}
+      },
+      "id": "send-whatsapp-chat",
+      "name": "Enviar Respuesta Conversacional",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2220, 500],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "whatsapp-bearer-token",
+          "name": "WhatsApp Bearer Token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={ \"status\": \"ok\" }",
+        "options": {}
+      },
+      "id": "respond-200",
+      "name": "Responder 200 OK a Meta",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [2660, 380]
+    }
+  ],
+  "connections": {
+    "WhatsApp Webhook (Meta)": {
+      "main": [
+        [
+          {
+            "node": "¿Es verificación de Meta?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Es verificación de Meta?": {
+      "main": [
+        [
+          {
+            "node": "Responder Verificación",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Extraer Mensaje WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extraer Mensaje WhatsApp": {
+      "main": [
+        [
+          {
+            "node": "¿Mensaje válido?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Mensaje válido?": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Buscar Cliente Existente",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Obtener Menú Disponible",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar Cliente Existente": {
+      "main": [
+        [
+          {
+            "node": "Preparar Contexto para IA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Obtener Menú Disponible": {
+      "main": [
+        [
+          {
+            "node": "Preparar Contexto para IA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar Contexto para IA": {
+      "main": [
+        [
+          {
+            "node": "IA - Chatbot Tata Pizza",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IA - Chatbot Tata Pizza": {
+      "main": [
+        [
+          {
+            "node": "Parsear Respuesta IA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parsear Respuesta IA": {
+      "main": [
+        [
+          {
+            "node": "¿Pedido Confirmado?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Pedido Confirmado?": {
+      "main": [
+        [
+          {
+            "node": "Crear Pedido en Tata Pizza",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Enviar Respuesta Conversacional",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Crear Pedido en Tata Pizza": {
+      "main": [
+        [
+          {
+            "node": "Enviar Confirmación WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar Confirmación WhatsApp": {
+      "main": [
+        [
+          {
+            "node": "Responder 200 OK a Meta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar Respuesta Conversacional": {
+      "main": [
+        [
+          {
+            "node": "Responder 200 OK a Meta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "tata-pizza"
+  },
+  "tags": ["tata-pizza", "whatsapp", "ia"],
+  "variables": {
+    "TATA_PIZZA_API_URL": {
+      "description": "URL de tu API de Tata Pizza (ej: https://tu-app.replit.app)",
+      "type": "string"
+    },
+    "WHATSAPP_PHONE_NUMBER_ID": {
+      "description": "ID del número de WhatsApp Business en Meta",
+      "type": "string"
+    }
+  }
+}

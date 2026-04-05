@@ -3,13 +3,23 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Tata Pizza API - Sistema de automatización de pedidos
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: menu
+    description: Menu management
+  - name: orders
+    description: Order management
+  - name: customers
+    description: Customer management
+  - name: stats
+    description: Statistics and dashboard data
+  - name: webhook
+    description: n8n webhook integration
 paths:
   /healthz:
     get:
@@ -24,6 +34,340 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /menu:
+    get:
+      operationId: listMenuItems
+      tags: [menu]
+      summary: List all menu items
+      parameters:
+        - name: category
+          in: query
+          schema:
+            type: string
+        - name: available
+          in: query
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: List of menu items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MenuItem"
+    post:
+      operationId: createMenuItem
+      tags: [menu]
+      summary: Create a menu item
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateMenuItemBody"
+      responses:
+        "201":
+          description: Created menu item
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MenuItem"
+
+  /menu/{id}:
+    get:
+      operationId: getMenuItem
+      tags: [menu]
+      summary: Get a menu item by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Menu item
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MenuItem"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    patch:
+      operationId: updateMenuItem
+      tags: [menu]
+      summary: Update a menu item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateMenuItemBody"
+      responses:
+        "200":
+          description: Updated menu item
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MenuItem"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      operationId: deleteMenuItem
+      tags: [menu]
+      summary: Delete a menu item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /orders:
+    get:
+      operationId: listOrders
+      tags: [orders]
+      summary: List orders
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of orders with their items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OrderWithItems"
+    post:
+      operationId: createOrder
+      tags: [orders]
+      summary: Create a new order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateOrderBody"
+      responses:
+        "201":
+          description: Created order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderWithItems"
+
+  /orders/{id}:
+    get:
+      operationId: getOrder
+      tags: [orders]
+      summary: Get an order by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Order with items
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderWithItems"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    patch:
+      operationId: updateOrderStatus
+      tags: [orders]
+      summary: Update order status
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateOrderStatusBody"
+      responses:
+        "200":
+          description: Updated order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderWithItems"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /customers:
+    get:
+      operationId: listCustomers
+      tags: [customers]
+      summary: List customers
+      parameters:
+        - name: phone
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of customers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Customer"
+    post:
+      operationId: createCustomer
+      tags: [customers]
+      summary: Create or upsert a customer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCustomerBody"
+      responses:
+        "201":
+          description: Created customer
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Customer"
+
+  /customers/{id}:
+    get:
+      operationId: getCustomer
+      tags: [customers]
+      summary: Get a customer by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Customer
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Customer"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    patch:
+      operationId: updateCustomer
+      tags: [customers]
+      summary: Update a customer
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateCustomerBody"
+      responses:
+        "200":
+          description: Updated customer
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Customer"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /stats/dashboard:
+    get:
+      operationId: getDashboardStats
+      tags: [stats]
+      summary: Get dashboard statistics
+      responses:
+        "200":
+          description: Dashboard stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardStats"
+
+  /webhook/whatsapp:
+    post:
+      operationId: whatsappWebhook
+      tags: [webhook]
+      summary: Webhook for n8n WhatsApp integration
+      description: Receives processed order data from n8n and creates an order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WhatsappWebhookBody"
+      responses:
+        "200":
+          description: Webhook processed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WhatsappWebhookResponse"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +378,366 @@ components:
       required:
         - status
 
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
+
+    MenuItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: ["string", "null"]
+        category:
+          type: string
+        priceSmall:
+          type: ["integer", "null"]
+        priceMedium:
+          type: ["integer", "null"]
+        priceLarge:
+          type: ["integer", "null"]
+        available:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - category
+        - available
+        - createdAt
+        - updatedAt
+
+    CreateMenuItemBody:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: ["string", "null"]
+        category:
+          type: string
+        priceSmall:
+          type: ["integer", "null"]
+        priceMedium:
+          type: ["integer", "null"]
+        priceLarge:
+          type: ["integer", "null"]
+        available:
+          type: boolean
+      required:
+        - name
+        - category
+
+    UpdateMenuItemBody:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: ["string", "null"]
+        category:
+          type: string
+        priceSmall:
+          type: ["integer", "null"]
+        priceMedium:
+          type: ["integer", "null"]
+        priceLarge:
+          type: ["integer", "null"]
+        available:
+          type: boolean
+
+    OrderItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        orderId:
+          type: integer
+        menuItemId:
+          type: ["integer", "null"]
+        name:
+          type: string
+        size:
+          type: ["string", "null"]
+        quantity:
+          type: integer
+        unitPrice:
+          type: integer
+        subtotal:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - orderId
+        - name
+        - quantity
+        - unitPrice
+        - subtotal
+        - createdAt
+
+    Order:
+      type: object
+      properties:
+        id:
+          type: integer
+        customerId:
+          type: ["integer", "null"]
+        customerName:
+          type: string
+        customerPhone:
+          type: string
+        deliveryAddress:
+          type: ["string", "null"]
+        deliveryType:
+          type: string
+        status:
+          type: string
+        total:
+          type: integer
+        notes:
+          type: ["string", "null"]
+        whatsappMessageId:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - customerName
+        - customerPhone
+        - deliveryType
+        - status
+        - total
+        - createdAt
+        - updatedAt
+
+    OrderWithItems:
+      allOf:
+        - $ref: "#/components/schemas/Order"
+        - type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: "#/components/schemas/OrderItem"
+          required:
+            - items
+
+    CreateOrderItemBody:
+      type: object
+      properties:
+        menuItemId:
+          type: ["integer", "null"]
+        name:
+          type: string
+        size:
+          type: ["string", "null"]
+        quantity:
+          type: integer
+        unitPrice:
+          type: integer
+      required:
+        - name
+        - quantity
+        - unitPrice
+
+    CreateOrderBody:
+      type: object
+      properties:
+        customerName:
+          type: string
+        customerPhone:
+          type: string
+        deliveryAddress:
+          type: ["string", "null"]
+        deliveryType:
+          type: string
+        notes:
+          type: ["string", "null"]
+        whatsappMessageId:
+          type: ["string", "null"]
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/CreateOrderItemBody"
+      required:
+        - customerName
+        - customerPhone
+        - items
+
+    UpdateOrderStatusBody:
+      type: object
+      properties:
+        status:
+          type: string
+        notes:
+          type: ["string", "null"]
+      required:
+        - status
+
+    Customer:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        phone:
+          type: string
+        address:
+          type: ["string", "null"]
+        notes:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - phone
+        - createdAt
+        - updatedAt
+
+    CreateCustomerBody:
+      type: object
+      properties:
+        name:
+          type: string
+        phone:
+          type: string
+        address:
+          type: ["string", "null"]
+        notes:
+          type: ["string", "null"]
+      required:
+        - name
+        - phone
+
+    UpdateCustomerBody:
+      type: object
+      properties:
+        name:
+          type: string
+        address:
+          type: ["string", "null"]
+        notes:
+          type: ["string", "null"]
+
+    DashboardStats:
+      type: object
+      properties:
+        totalOrdersToday:
+          type: integer
+        pendingOrders:
+          type: integer
+        inPreparationOrders:
+          type: integer
+        readyOrders:
+          type: integer
+        deliveredOrdersToday:
+          type: integer
+        totalRevenueToday:
+          type: integer
+        totalCustomers:
+          type: integer
+        topItems:
+          type: array
+          items:
+            $ref: "#/components/schemas/TopItem"
+      required:
+        - totalOrdersToday
+        - pendingOrders
+        - inPreparationOrders
+        - readyOrders
+        - deliveredOrdersToday
+        - totalRevenueToday
+        - totalCustomers
+        - topItems
+
+    TopItem:
+      type: object
+      properties:
+        name:
+          type: string
+        count:
+          type: integer
+      required:
+        - name
+        - count
+
+    WhatsappOrderItem:
+      type: object
+      properties:
+        name:
+          type: string
+        size:
+          type: ["string", "null"]
+        quantity:
+          type: integer
+        unitPrice:
+          type: integer
+      required:
+        - name
+        - quantity
+        - unitPrice
+
+    WhatsappWebhookBody:
+      type: object
+      properties:
+        customerName:
+          type: string
+        customerPhone:
+          type: string
+        deliveryAddress:
+          type: ["string", "null"]
+        deliveryType:
+          type: string
+        notes:
+          type: ["string", "null"]
+        whatsappMessageId:
+          type: ["string", "null"]
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/WhatsappOrderItem"
+      required:
+        - customerName
+        - customerPhone
+        - items
+
+    WhatsappWebhookResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        orderId:
+          type: integer
+        message:
+          type: string
+        order:
+          $ref: "#/components/schemas/OrderWithItems"
+      required:
+        - success
+        - orderId
+        - message
+        - order
