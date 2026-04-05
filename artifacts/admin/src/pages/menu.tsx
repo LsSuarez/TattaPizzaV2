@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useListMenuItems, useUpdateMenuItem, useCreateMenuItem, getListMenuItemsQueryKey } from "@workspace/api-client-react";
+import type { MenuItem, CreateMenuItemBody, UpdateMenuItemBody } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { formatMoney } from "@/lib/format";
@@ -35,9 +36,9 @@ export default function MenuPage() {
   const handleToggleAvailable = (id: number, currentAvailable: boolean) => {
     updateMenu.mutate({ id, data: { available: !currentAvailable } }, {
       onSuccess: () => {
-        queryClient.setQueryData(getListMenuItemsQueryKey(), (old: any) => {
+        queryClient.setQueryData(getListMenuItemsQueryKey(), (old: MenuItem[] | undefined) => {
           if (!old) return old;
-          return old.map((item: any) => item.id === id ? { ...item, available: !currentAvailable } : item);
+          return old.map((item) => item.id === id ? { ...item, available: !currentAvailable } : item);
         });
         toast({ title: "Menu updated", description: "Item availability changed." });
       }
@@ -160,7 +161,7 @@ export default function MenuPage() {
       
       <ItemDialog 
         open={!!editingItem} 
-        onOpenChange={(open) => !open && setEditingItem(null)} 
+        onOpenChange={(open: boolean) => !open && setEditingItem(null)} 
         item={editingItem}
         mode="edit" 
       />
@@ -168,7 +169,14 @@ export default function MenuPage() {
   );
 }
 
-function ItemDialog({ open, onOpenChange, item, mode }: any) {
+interface ItemDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  item?: MenuItem | null;
+  mode: "create" | "edit";
+}
+
+function ItemDialog({ open, onOpenChange, item, mode }: ItemDialogProps) {
   const [name, setName] = useState(item?.name || "");
   const [category, setCategory] = useState(item?.category || "pizza");
   const [description, setDescription] = useState(item?.description || "");
@@ -186,18 +194,21 @@ function ItemDialog({ open, onOpenChange, item, mode }: any) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    const payload: any = {
-      name,
-      category,
-      description: description || null,
+    const prices = {
       priceSmall: priceSmall ? Math.round(parseFloat(priceSmall) * 100) : null,
       priceMedium: priceMedium ? Math.round(parseFloat(priceMedium) * 100) : null,
       priceLarge: priceLarge ? Math.round(parseFloat(priceLarge) * 100) : null,
-      available: item?.available ?? true
     };
 
     if (mode === "create") {
-      createMenu.mutate({ data: payload }, {
+      const createPayload: CreateMenuItemBody = {
+        name,
+        category,
+        description: description || null,
+        available: item?.available ?? true,
+        ...prices,
+      };
+      createMenu.mutate({ data: createPayload }, {
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: getListMenuItemsQueryKey() });
           toast({ title: "Success", description: "Menu item created" });
@@ -207,7 +218,13 @@ function ItemDialog({ open, onOpenChange, item, mode }: any) {
         }
       });
     } else {
-      updateMenu.mutate({ id: item.id, data: payload }, {
+      const updatePayload: UpdateMenuItemBody = {
+        name,
+        description: description || null,
+        available: item?.available ?? true,
+        ...prices,
+      };
+      updateMenu.mutate({ id: item!.id, data: updatePayload }, {
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: getListMenuItemsQueryKey() });
           toast({ title: "Success", description: "Menu item updated" });

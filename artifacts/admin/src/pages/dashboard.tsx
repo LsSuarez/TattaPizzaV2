@@ -1,4 +1,5 @@
-import { useGetDashboardStats, useListOrders } from "@workspace/api-client-react";
+import type React from "react";
+import { useGetDashboardStats, useListOrders, getGetDashboardStatsQueryKey, getListOrdersQueryKey } from "@workspace/api-client-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { formatMoney } from "@/lib/format";
 import { format } from "date-fns";
@@ -9,13 +10,13 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 
 export default function DashboardPage() {
-  const { data: stats, isLoading: isStatsLoading } = useGetDashboardStats(undefined, {
-    query: { refetchInterval: 10000 },
+  const { data: stats, isLoading: isStatsLoading } = useGetDashboardStats({
+    query: { refetchInterval: 10000, queryKey: getGetDashboardStatsQueryKey() },
   });
 
   const { data: recentOrders, isLoading: isOrdersLoading } = useListOrders(
     { limit: 5 },
-    { query: { refetchInterval: 10000 } }
+    { query: { refetchInterval: 10000, queryKey: getListOrdersQueryKey({ limit: 5 }) } }
   );
 
   return (
@@ -141,7 +142,7 @@ export default function DashboardPage() {
   );
 }
 
-function StatCard({ title, value, icon: Icon, description, color }: { title: string, value: React.ReactNode, icon: any, description: string, color: string }) {
+function StatCard({ title, value, icon: Icon, description, color }: { title: string, value: React.ReactNode, icon: React.ElementType, description: string, color: string }) {
   return (
     <Card className="border-border/50 shadow-sm">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

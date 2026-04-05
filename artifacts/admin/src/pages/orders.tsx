@@ -1,5 +1,7 @@
 import { useState } from "react";
+import type React from "react";
 import { useListOrders, useUpdateOrderStatus, getListOrdersQueryKey, getGetDashboardStatsQueryKey } from "@workspace/api-client-react";
+import type { OrderWithItems, OrderItem } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { formatMoney } from "@/lib/format";
@@ -15,7 +17,7 @@ const STATUSES = ['RECIBIDO', 'EN_PREPARACION', 'LISTO', 'ENTREGADO'];
 export default function OrdersPage() {
   const { data: orders, isLoading } = useListOrders(
     { limit: 200 },
-    { query: { refetchInterval: 10000 } }
+    { query: { refetchInterval: 10000, queryKey: getListOrdersQueryKey({ limit: 200 }) } }
   );
 
   if (isLoading) {
@@ -87,7 +89,16 @@ export default function OrdersPage() {
   );
 }
 
-function StatusColumn({ title, status, orders, icon: Icon, colorClass, headerClass }: any) {
+interface StatusColumnProps {
+  title: string;
+  status: string;
+  orders: OrderWithItems[];
+  icon: React.ElementType;
+  colorClass: string;
+  headerClass: string;
+}
+
+function StatusColumn({ title, orders, icon: Icon, colorClass, headerClass }: StatusColumnProps) {
   return (
     <div className={`flex flex-col rounded-xl border ${colorClass} overflow-hidden`}>
       <div className={`p-4 border-b border-inherit bg-white/50 dark:bg-black/20 flex items-center justify-between ${headerClass}`}>
@@ -103,7 +114,7 @@ function StatusColumn({ title, status, orders, icon: Icon, colorClass, headerCla
             Empty
           </div>
         ) : (
-          orders.map((order: any) => (
+          orders.map((order) => (
             <OrderCard key={order.id} order={order} />
           ))
         )}
@@ -112,7 +123,7 @@ function StatusColumn({ title, status, orders, icon: Icon, colorClass, headerCla
   );
 }
 
-function OrderCard({ order }: { order: any }) {
+function OrderCard({ order }: { order: OrderWithItems }) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const updateStatus = useUpdateOrderStatus();
@@ -131,9 +142,9 @@ function OrderCard({ order }: { order: any }) {
               description: `Order #${order.id} moved to ${nextStatus.replace('_', ' ')}`,
             });
             // Patch local cache immediately for fast UI
-            queryClient.setQueryData(getListOrdersQueryKey({ limit: 200 }), (old: any) => {
+            queryClient.setQueryData(getListOrdersQueryKey({ limit: 200 }), (old: OrderWithItems[] | undefined) => {
               if (!old) return old;
-              return old.map((o: any) => o.id === order.id ? { ...o, status: nextStatus } : o);
+              return old.map((o) => o.id === order.id ? { ...o, status: nextStatus } : o);
             });
             // Invalidate dashboard stats
             queryClient.invalidateQueries({ queryKey: getGetDashboardStatsQueryKey() });
@@ -174,7 +185,7 @@ function OrderCard({ order }: { order: any }) {
       </CardHeader>
       <CardContent className="p-3 pt-0 text-sm space-y-3">
         <div className="space-y-1.5 bg-muted/30 p-2 rounded-md border border-border/30">
-          {order.items.map((item: any) => (
+          {order.items.map((item: OrderItem) => (
             <div key={item.id} className="flex justify-between items-start gap-2">
               <span className="font-medium text-xs leading-tight">
                 {item.quantity}x {item.name} {item.size && <span className="text-muted-foreground">({item.size})</span>}

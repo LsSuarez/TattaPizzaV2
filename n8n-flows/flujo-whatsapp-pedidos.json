@@ -209,38 +209,8 @@
         "method": "POST",
         "url": "={{ $env.TATA_PIZZA_API_URL }}/api/webhook/whatsapp",
         "sendBody": true,
-        "bodyParameters": {
-          "parameters": [
-            {
-              "name": "customerName",
-              "value": "={{ $('Parsear Respuesta IA').item.json.customerName }}"
-            },
-            {
-              "name": "customerPhone",
-              "value": "={{ $('Parsear Respuesta IA').item.json.from }}"
-            },
-            {
-              "name": "deliveryAddress",
-              "value": "={{ $('Parsear Respuesta IA').item.json.parsedOrder.deliveryAddress }}"
-            },
-            {
-              "name": "deliveryType",
-              "value": "={{ $('Parsear Respuesta IA').item.json.parsedOrder.deliveryType }}"
-            },
-            {
-              "name": "notes",
-              "value": "={{ $('Parsear Respuesta IA').item.json.parsedOrder.notes }}"
-            },
-            {
-              "name": "whatsappMessageId",
-              "value": "={{ $('Parsear Respuesta IA').item.json.messageId }}"
-            },
-            {
-              "name": "items",
-              "value": "={{ JSON.stringify($('Parsear Respuesta IA').item.json.parsedOrder.items) }}"
-            }
-          ]
-        },
+        "contentType": "json",
+        "body": "={{ JSON.stringify({ customerName: $('Parsear Respuesta IA').item.json.customerName, customerPhone: $('Parsear Respuesta IA').item.json.from, deliveryAddress: $('Parsear Respuesta IA').item.json.parsedOrder.deliveryAddress, deliveryType: $('Parsear Respuesta IA').item.json.parsedOrder.deliveryType, notes: $('Parsear Respuesta IA').item.json.parsedOrder.notes, whatsappMessageId: $('Parsear Respuesta IA').item.json.messageId, items: $('Parsear Respuesta IA').item.json.parsedOrder.items }) }}",
         "options": {}
       },
       "id": "create-order",

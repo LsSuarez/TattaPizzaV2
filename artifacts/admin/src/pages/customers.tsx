@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useListCustomers } from "@workspace/api-client-react";
+import { useListCustomers, getListCustomersQueryKey } from "@workspace/api-client-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -21,9 +21,10 @@ export default function CustomersPage() {
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 500);
 
+  const params = debouncedSearch ? { phone: debouncedSearch } : undefined;
   const { data: customers, isLoading } = useListCustomers(
-    debouncedSearch ? { phone: debouncedSearch } : undefined,
-    { query: { enabled: true } }
+    params,
+    { query: { enabled: true, queryKey: getListCustomersQueryKey(params) } }
   );
 
   return (
