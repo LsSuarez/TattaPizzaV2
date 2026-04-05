@@ -222,6 +222,21 @@
     {
       "parameters": {
         "method": "POST",
+        "url": "=https://api.telegram.org/bot{{ $env.TELEGRAM_BOT_TOKEN }}/sendMessage",
+        "sendBody": true,
+        "contentType": "json",
+        "body": "={{ JSON.stringify({ chat_id: $env.TELEGRAM_COOK_CHAT_ID, text: '🍕 NUEVO PEDIDO #' + $('Crear Pedido en Tata Pizza').item.json.order.id + '\\n\\nCliente: ' + $('Parsear Respuesta IA').item.json.customerName + '\\nTel: ' + $('Parsear Respuesta IA').item.json.from + '\\nEntrega: ' + $('Parsear Respuesta IA').item.json.parsedOrder.deliveryType + '\\nDirección: ' + ($('Parsear Respuesta IA').item.json.parsedOrder.deliveryAddress || 'Recojo en tienda') + '\\n\\nItems:\\n' + $('Parsear Respuesta IA').item.json.parsedOrder.items.map(i => '• ' + i.quantity + 'x ' + i.name + ' (' + i.size + ')').join('\\n') + ($('Parsear Respuesta IA').item.json.parsedOrder.notes ? '\\n\\nNota: ' + $('Parsear Respuesta IA').item.json.parsedOrder.notes : '') + '\\n\\nTotal: S/.' + ($('Crear Pedido en Tata Pizza').item.json.order.total / 100).toFixed(0), parse_mode: 'HTML' }) }}",
+        "options": {}
+      },
+      "id": "notify-cook",
+      "name": "Notificar Cocina",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2340, 240]
+    },
+    {
+      "parameters": {
+        "method": "POST",
         "url": "=https://graph.facebook.com/v18.0/{{ $env.WHATSAPP_PHONE_NUMBER_ID }}/messages",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
@@ -413,6 +428,17 @@
       "main": [
         [
           {
+            "node": "Notificar Cocina",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notificar Cocina": {
+      "main": [
+        [
+          {
             "node": "Enviar Confirmación WhatsApp",
             "type": "main",
             "index": 0
@@ -459,6 +485,14 @@
     },
     "WHATSAPP_PHONE_NUMBER_ID": {
       "description": "ID del número de WhatsApp Business en Meta",
+      "type": "string"
+    },
+    "TELEGRAM_BOT_TOKEN": {
+      "description": "Token del bot de Telegram para notificaciones a cocina (obtener de @BotFather)",
+      "type": "string"
+    },
+    "TELEGRAM_COOK_CHAT_ID": {
+      "description": "ID del chat/grupo de Telegram donde se notifica a la cocina",
       "type": "string"
     }
   }

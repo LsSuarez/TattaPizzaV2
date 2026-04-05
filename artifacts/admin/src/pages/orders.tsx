@@ -198,7 +198,7 @@ function OrderCard({ order }: { order: OrderWithItems }) {
           <div className="flex items-center gap-1.5">
             <Phone size={12} /> {order.customerPhone}
           </div>
-          {order.deliveryType === 'DELIVERY' && order.deliveryAddress && (
+          {order.deliveryType?.toLowerCase() === 'delivery' && order.deliveryAddress && (
             <div className="flex items-start gap-1.5 mt-1">
               <MapPin size={12} className="mt-0.5 shrink-0" /> 
               <span className="line-clamp-2">{order.deliveryAddress}</span>

@@ -1,0 +1,480 @@
+## HU-01: Registro de usuario con validación de correo electrónico
+
+*Declaración:*
+
+* *YO COMO* cliente nuevo de la pizzería
+* *QUIERO* registrarme en la plataforma web proporcionando mis datos personales y validando mi correo electrónico
+* *CON EL OBJETIVO* de tener una cuenta segura que me permita realizar pedidos, guardar mis preferencias y hacer seguimiento de mis órdenes
+
+*Criterios de Aceptación:*
+
+1. *Dado que* el usuario accede a la página de registro y completa todos los campos obligatorios (nombre, correo electrónico, contraseña, teléfono, dirección)  
+   *Cuando* presiona el botón "Registrarse"  
+   *Entonces* el sistema envía un correo electrónico de verificación con un enlace único de activación y muestra un mensaje indicando que debe revisar su bandeja de entrada
+
+2. *Dado que* el usuario recibe el correo de verificación y hace clic en el enlace de activación  
+   *Cuando* el enlace es válido y no ha expirado (máximo 24 horas)  
+   *Entonces* el sistema activa la cuenta, redirige al usuario a la página de inicio de sesión y muestra un mensaje de confirmación de cuenta activada
+
+3. *Dado que* el usuario intenta registrarse con un correo electrónico que ya existe en el sistema  
+   *Cuando* presiona el botón "Registrarse"  
+   *Entonces* el sistema muestra un mensaje de error indicando que el correo ya está registrado y sugiere iniciar sesión o recuperar contraseña
+
+*Prioridad:* P0  
+*Estimación:* 5 puntos
+
+---
+
+## HU-02: Inicio de sesión con autenticación segura
+
+*Declaración:*
+
+* *YO COMO* usuario registrado de la plataforma
+* *QUIERO* iniciar sesión con mi correo electrónico y contraseña de forma segura
+* *CON EL OBJETIVO* de acceder a mi cuenta, ver mi historial de pedidos y realizar nuevas órdenes
+
+*Criterios de Aceptación:*
+
+1. *Dado que* el usuario tiene una cuenta activa y verificada  
+   *Cuando* ingresa su correo electrónico y contraseña correctos y presiona "Iniciar Sesión"  
+   *Entonces* el sistema autentica al usuario mediante Atoms Cloud Auth, genera un token de sesión y lo redirige al panel principal de la aplicación
+
+2. *Dado que* el usuario ingresa credenciales incorrectas  
+   *Cuando* presiona "Iniciar Sesión"  
+   *Entonces* el sistema muestra un mensaje de error genérico "Credenciales incorrectas" sin revelar si el error es en el correo o la contraseña, e incrementa el contador de intentos fallidos
+
+3. *Dado que* el usuario ha fallado 5 intentos consecutivos de inicio de sesión  
+   *Cuando* intenta iniciar sesión nuevamente  
+   *Entonces* el sistema bloquea temporalmente la cuenta por 15 minutos, envía una notificación al correo del usuario y muestra un mensaje indicando el tiempo de espera
+
+*Prioridad:* P0  
+*Estimación:* 3 puntos
+
+---
+
+## HU-03: Recuperación de contraseña
+
+*Declaración:*
+
+* *YO COMO* usuario que ha olvidado su contraseña
+* *QUIERO* poder restablecer mi contraseña a través de mi correo electrónico registrado
+* *CON EL OBJETIVO* de recuperar el acceso a mi cuenta sin necesidad de crear una nueva
+
+*Criterios de Aceptación:*
+
+1. *Dado que* el usuario se encuentra en la pantalla de inicio de sesión y hace clic en "¿Olvidaste tu contraseña?"  
+   *Cuando* ingresa su correo electrónico registrado y presiona "Enviar enlace de recuperación"  
+   *Entonces* el sistema envía un correo con un enlace seguro de restablecimiento que expira en 1 hora y muestra un mensaje de confirmación
+
+2. *Dado que* el usuario hace clic en el enlace de recuperación válido  
+   *Cuando* ingresa una nueva contraseña que cumple con los requisitos de seguridad (mínimo 8 caracteres, una mayúscula, un número y un carácter especial)  
+   *Entonces* el sistema actualiza la contraseña, invalida todas las sesiones activas anteriores y redirige al usuario a la página de inicio de sesión
+
+3. *Dado que* el usuario intenta usar un enlace de recuperación expirado o ya utilizado  
+   *Cuando* accede al enlace  
+   *Entonces* el sistema muestra un mensaje indicando que el enlace ha expirado y ofrece la opción de solicitar uno nuevo
+
+*Prioridad:* P0  
+*Estimación:* 3 puntos
+
+---
+
+## HU-04: Navegación del menú de pizzas y productos
+
+*Declaración:*
+
+* *YO COMO* cliente de la pizzería
+* *QUIERO* explorar el menú completo de pizzas, bebidas, complementos y promociones con imágenes, descripciones y precios
+* *CON EL OBJETIVO* de elegir los productos que deseo ordenar de manera informada y atractiva
+
+*Criterios de Aceptación:*
+
+1. *Dado que* el usuario ha iniciado sesión y accede a la sección "Menú"  
+   *Cuando* la página se carga completamente  
+   *Entonces* el sistema muestra todas las categorías de productos (pizzas, bebidas, complementos, postres, promociones) con imágenes de alta calidad, nombre, descripción, tamaños disponibles y precios actualizados
+
+2. *Dado que* el usuario desea filtrar los productos del menú  
+   *Cuando* selecciona una categoría específica o utiliza la barra de búsqueda  
+   *Entonces* el sistema filtra y muestra únicamente los productos que coinciden con el criterio de búsqueda en menos de 2 segundos
+
+3. *Dado que* el usuario selecciona un producto específico del menú  
+   *Cuando* hace clic en la tarjeta del producto  
+   *Entonces* el sistema muestra un detalle ampliado con opciones de personalización (tamaño, ingredientes extra, masa), información nutricional y el botón "Agregar al carrito"
+
+*Prioridad:* P0  
+*Estimación:* 5 puntos
+
+---
+
+## HU-05: Interacción con chatbot para realizar pedidos
+
+*Declaración:*
+
+* *YO COMO* cliente de la pizzería
+* *QUIERO* poder realizar mi pedido completo a través de un chatbot inteligente integrado en la plataforma web
+* *CON EL OBJETIVO* de hacer mi pedido de forma rápida, conversacional y sin necesidad de navegar manualmente por todo el menú
+
+*Criterios de Aceptación:*
+
+1. *Dado que* el usuario accede a la plataforma y hace clic en el ícono del chatbot  
+   *Cuando* el chatbot se abre  
+   *Entonces* el sistema muestra un mensaje de bienvenida personalizado con el nombre del usuario, presenta las opciones principales (ver menú, hacer pedido, ver promociones, consultar estado de pedido) y está listo para recibir mensajes en lenguaje natural
+
+2. *Dado que* el usuario escribe al chatbot "Quiero una pizza grande de pepperoni con extra queso"  
+   *Cuando* el chatbot procesa el mensaje mediante Edge Functions de Atoms Cloud con modelo de IA  
+   *Entonces* el sistema identifica el producto, tamaño y personalizaciones solicitadas, confirma el pedido mostrando un resumen con precio y pregunta si desea agregar algo más o proceder al pago
+
+3. *Dado que* el usuario confirma su pedido completo a través del chatbot  
+   *Cuando* el chatbot presenta el resumen final con todos los productos, cantidades y precio total  
+   *Entonces* el sistema ofrece las opciones de pago disponibles (Yape/Plin QR, transferencia bancaria, pago contra entrega) y guía al usuario paso a paso para completar la transacción sin salir de la conversación
+
+*Prioridad:* P0  
+*Estimación:* 13 puntos
+
+---
+
+## HU-06: Gestión del carrito de compras
+
+*Declaración:*
+
+* *YO COMO* cliente que está armando su pedido
+* *QUIERO* agregar, modificar y eliminar productos de mi carrito de compras antes de confirmar el pedido
+* *CON EL OBJETIVO* de tener control total sobre mi orden y asegurarme de que todo esté correcto antes de pagar
+
+*Criterios de Aceptación:*
+
+1. *Dado que* el usuario ha agregado uno o más productos al carrito  
+   *Cuando* accede a la vista del carrito de compras  
+   *Entonces* el sistema muestra la lista detallada de productos con nombre, personalizaciones, cantidad, precio unitario, subtotal por producto y el total general del pedido
+
+2. *Dado que* el usuario desea modificar la cantidad de un producto en el carrito  
+   *Cuando* utiliza los botones de incrementar/decrementar cantidad o edita directamente el número  
+   *Entonces* el sistema actualiza automáticamente la cantidad, recalcula el subtotal del producto y el total general en tiempo real
+
+3. *Dado que* el usuario desea eliminar un producto del carrito  
+   *Cuando* presiona el botón "Eliminar" junto al producto  
+   *Entonces* el sistema solicita confirmación, elimina el producto del carrito y actualiza el total general inmediatamente
+
+*Prioridad:* P0  
+*Estimación:* 5 puntos
+
+---
+
+## HU-07: Pago con Yape/Plin (QR)
+
+*Declaración:*
+
+* *YO COMO* cliente que ha confirmado su pedido
+* *QUIERO* pagar mi orden escaneando un código QR de Yape o Plin y adjuntando el comprobante de pago
+* *CON EL OBJETIVO* de completar la transacción de manera rápida, gratuita y sin necesidad de tarjeta de crédito
+
+*Criterios de Aceptación:*
+
+1. *Dado que* el usuario ha confirmado su pedido y selecciona "Pagar con Yape/Plin" como método de pago  
+   *Cuando* presiona el botón de pago  
+   *Entonces* el sistema muestra el código QR de la pizzería correspondiente al monto exacto del pedido, junto con el número de teléfono asociado y las instrucciones para realizar el pago
+
+2. *Dado que* el usuario ha realizado el pago por Yape/Plin y sube la captura del comprobante  
+   *Cuando* adjunta la imagen del comprobante y presiona "Confirmar pago"  
+   *Entonces* el sistema registra el comprobante, actualiza el estado del pedido a "Pendiente de verificación", notifica al administrador para validar el pago y envía un correo de confirmación al cliente indicando que su pago está siendo verificado
+
+3. *Dado que* el administrador verifica y aprueba el comprobante de pago  
+   *Cuando* marca el pago como "Verificado" en el panel de administración  
+   *Entonces* el sistema actualiza el estado del pedido a "Pagado", envía la orden al panel del pizzero y notifica al cliente por correo que su pedido está siendo preparado
+
+*Prioridad:* P0  
+*Estimación:* 5 puntos
+
+---
+
+## HU-08: Pago con transferencia bancaria o pago contra entrega
+
+*Declaración:*
+
+* *YO COMO* cliente que prefiere pagar por transferencia bancaria o en efectivo al recibir su pedido
+* *QUIERO* seleccionar entre transferencia bancaria (adjuntando comprobante) o pago contra entrega en efectivo
+* *CON EL OBJETIVO* de tener flexibilidad en mis opciones de pago sin depender de plataformas de pago con costo
+
+*Criterios de Aceptación:*
+
+1. *Dado que* el usuario ha confirmado su pedido y selecciona "Transferencia bancaria" como método de pago  
+   *Cuando* presiona el botón de pago  
+   *Entonces* el sistema muestra los datos bancarios de la pizzería (banco, número de cuenta, CCI, titular), el monto exacto a transferir y un campo para subir la captura del comprobante de transferencia
+
+2. *Dado que* el usuario selecciona "Pago contra entrega" como método de pago  
+   *Cuando* confirma su pedido  
+   *Entonces* el sistema registra el pedido con estado "Pago contra entrega", muestra un mensaje indicando que deberá tener el monto exacto en efectivo al momento de la entrega, y envía la orden al panel del pizzero directamente
+
+3. *Dado que* el usuario ha subido un comprobante de transferencia bancaria  
+   *Cuando* el administrador verifica y aprueba el comprobante  
+   *Entonces* el sistema actualiza el estado del pedido a "Pagado", envía la orden al panel del pizzero y notifica al cliente por correo que su pedido está confirmado y en preparación
+
+*Prioridad:* P0  
+*Estimación:* 5 puntos
+
+---
+
+## HU-09: Procesamiento automático de órdenes con Edge Functions
+
+*Declaración:*
+
+* *YO COMO* administrador de la pizzería
+* *QUIERO* que las órdenes confirmadas y pagadas se procesen automáticamente mediante Edge Functions de Atoms Cloud
+* *CON EL OBJETIVO* de eliminar procesos manuales, reducir errores y agilizar la comunicación entre el sistema, la cocina y el cliente sin costos adicionales
+
+*Criterios de Aceptación:*
+
+1. *Dado que* un cliente completa exitosamente el pago de su pedido (o selecciona pago contra entrega)  
+   *Cuando* el sistema recibe la confirmación  
+   *Entonces* una Edge Function se ejecuta automáticamente y: registra la orden en la base de datos de Atoms Cloud, actualiza el panel del pizzero en tiempo real, envía un correo de confirmación al cliente y actualiza el estado del pedido a "En espera"
+
+2. *Dado que* el pizzero cambia el estado de una orden en su panel  
+   *Cuando* el estado cambia de "En espera" a "En producción" o de "En producción" a "Listo para envío"  
+   *Entonces* una Edge Function envía automáticamente un correo electrónico al cliente informando el cambio de estado y, en caso de "Listo para envío", notifica al motorizado asignado con los detalles de entrega
+
+3. *Dado que* ocurre un error en algún paso del procesamiento automático  
+   *Cuando* el sistema detecta el fallo  
+   *Entonces* la Edge Function registra el error en un log de la base de datos, envía una alerta al administrador por correo electrónico y reintenta la operación hasta 3 veces antes de escalar el problema
+
+*Prioridad:* P0  
+*Estimación:* 8 puntos
+
+---
+
+## HU-10: Panel del pizzero para gestión de órdenes
+
+*Declaración:*
+
+* *YO COMO* pizzero/cocinero de la pizzería
+* *QUIERO* tener un panel dedicado donde pueda ver todas las órdenes pendientes, en producción y listas, con sus detalles completos
+* *CON EL OBJETIVO* de gestionar eficientemente la preparación de pedidos, priorizar órdenes y actualizar su estado en tiempo real
+
+*Criterios de Aceptación:*
+
+1. *Dado que* el pizzero inicia sesión con su rol de cocina  
+   *Cuando* accede a su panel de trabajo  
+   *Entonces* el sistema muestra un tablero tipo Kanban con tres columnas: "En espera", "En producción" y "Listo para envío", con cada orden mostrando número de pedido, hora de ingreso, detalle de productos, personalizaciones y tiempo transcurrido
+
+2. *Dado que* llega una nueva orden al sistema  
+   *Cuando* la Edge Function procesa la orden y la registra en la base de datos  
+   *Entonces* el sistema muestra la nueva orden en la columna "En espera" con una notificación sonora y visual destacada (usando la API de Audio del navegador), y el pizzero puede arrastrarla a "En producción" cuando comience a prepararla
+
+3. *Dado que* el pizzero ha terminado de preparar un pedido  
+   *Cuando* arrastra la orden a la columna "Listo para envío"  
+   *Entonces* el sistema actualiza el estado del pedido, notifica automáticamente al motorizado disponible por correo electrónico y al cliente que su pedido está listo y será enviado pronto
+
+*Prioridad:* P0  
+*Estimación:* 8 puntos
+
+---
+
+## HU-11: Seguimiento de estado del pedido por el cliente
+
+*Declaración:*
+
+* *YO COMO* cliente que ha realizado un pedido
+* *QUIERO* ver el estado actual de mi pedido con las etapas: en espera, en producción, listo para envío, en camino y entregado
+* *CON EL OBJETIVO* de saber en qué fase se encuentra mi orden y tener una estimación de cuándo la recibiré
+
+*Criterios de Aceptación:*
+
+1. *Dado que* el cliente ha realizado un pedido exitosamente  
+   *Cuando* accede a la sección "Mis Pedidos" o hace clic en el enlace de seguimiento del correo de confirmación  
+   *Entonces* el sistema muestra una barra de progreso visual con las etapas: "Pedido confirmado" → "En espera" → "En producción" → "Listo para envío" → "En camino" → "Entregado", con la etapa actual resaltada y la hora de cada cambio de estado
+
+2. *Dado que* el estado del pedido cambia en el sistema  
+   *Cuando* el pizzero o el motorizado actualiza el estado  
+   *Entonces* la vista de seguimiento del cliente se actualiza automáticamente mediante polling cada 30 segundos sin necesidad de recargar la página manualmente, y se envía un correo electrónico al cliente informando el cambio
+
+3. *Dado que* el pedido se encuentra en la etapa "En camino"  
+   *Cuando* el cliente visualiza el seguimiento  
+   *Entonces* el sistema muestra los datos del motorizado (nombre y teléfono de contacto), la dirección de entrega confirmada y el tiempo estimado de llegada basado en el promedio histórico de entregas
+
+*Prioridad:* P0  
+*Estimación:* 5 puntos
+
+---
+
+## HU-12: Panel del motorizado para gestión de entregas
+
+*Declaración:*
+
+* *YO COMO* motorizado/repartidor de la pizzería
+* *QUIERO* tener un panel donde pueda ver las entregas asignadas con la dirección del cliente, datos de contacto y detalle del pedido
+* *CON EL OBJETIVO* de realizar las entregas de forma eficiente, rápida y sin errores
+
+*Criterios de Aceptación:*
+
+1. *Dado que* el motorizado inicia sesión con su rol de repartidor  
+   *Cuando* accede a su panel de entregas  
+   *Entonces* el sistema muestra la lista de pedidos asignados con: número de pedido, nombre del cliente, dirección completa de entrega, referencia, teléfono de contacto, detalle de productos, método de pago (para saber si debe cobrar en efectivo) y hora límite de entrega
+
+2. *Dado que* el motorizado acepta una entrega y presiona "Iniciar entrega"  
+   *Cuando* el sistema procesa la solicitud  
+   *Entonces* se actualiza el estado del pedido a "En camino", se notifica al cliente por correo electrónico que su pedido está en camino con los datos del motorizado y se inicia el temporizador de entrega
+
+3. *Dado que* el motorizado ha entregado el pedido al cliente  
+   *Cuando* presiona el botón "Marcar como entregado"  
+   *Entonces* el sistema registra la hora de entrega, actualiza el estado del pedido a "Entregado", notifica al cliente por correo y libera al motorizado para recibir nuevas asignaciones
+
+*Prioridad:* P0  
+*Estimación:* 5 puntos
+
+---
+
+## HU-13: Gestión de direcciones de entrega del cliente
+
+*Declaración:*
+
+* *YO COMO* cliente frecuente de la pizzería
+* *QUIERO* guardar, editar y seleccionar múltiples direcciones de entrega en mi perfil
+* *CON EL OBJETIVO* de agilizar el proceso de pedido sin tener que ingresar mi dirección cada vez
+
+*Criterios de Aceptación:*
+
+1. *Dado que* el usuario accede a la sección "Mis Direcciones" en su perfil  
+   *Cuando* presiona "Agregar nueva dirección"  
+   *Entonces* el sistema muestra un formulario con campos para: etiqueta (Casa, Oficina, Otro), dirección completa, distrito, referencia y un campo opcional de indicaciones adicionales para el motorizado
+
+2. *Dado que* el usuario tiene múltiples direcciones guardadas  
+   *Cuando* está realizando un pedido y llega al paso de selección de dirección de entrega  
+   *Entonces* el sistema muestra la lista de direcciones guardadas con la opción de seleccionar una como destino, establecer una como predeterminada o agregar una nueva dirección temporal
+
+3. *Dado que* el usuario desea editar o eliminar una dirección existente  
+   *Cuando* selecciona la opción de editar o eliminar en una dirección guardada  
+   *Entonces* el sistema permite modificar todos los campos o eliminar la dirección previa confirmación, siempre manteniendo al menos una dirección activa en el perfil
+
+*Prioridad:* P1  
+*Estimación:* 3 puntos
+
+---
+
+## HU-14: Panel de administración para gestión del menú
+
+*Declaración:*
+
+* *YO COMO* administrador de la pizzería
+* *QUIERO* poder crear, editar, activar/desactivar y eliminar productos del menú desde un panel de administración
+* *CON EL OBJETIVO* de mantener el menú actualizado con los productos disponibles, precios correctos y promociones vigentes
+
+*Criterios de Aceptación:*
+
+1. *Dado que* el administrador accede al panel de administración con su rol de admin  
+   *Cuando* navega a la sección "Gestión de Menú"  
+   *Entonces* el sistema muestra la lista completa de productos organizados por categorías con nombre, imagen, precio, estado (activo/inactivo), y opciones de editar, activar/desactivar y eliminar
+
+2. *Dado que* el administrador desea agregar un nuevo producto al menú  
+   *Cuando* presiona "Nuevo Producto" y completa el formulario (nombre, descripción, categoría, precio por tamaño, imagen, ingredientes, opciones de personalización)  
+   *Entonces* el sistema valida los campos obligatorios, guarda el producto en Atoms Cloud Database, lo publica inmediatamente en el menú visible para los clientes y actualiza el catálogo del chatbot
+
+3. *Dado que* el administrador desea crear una promoción temporal  
+   *Cuando* configura una promoción con productos seleccionados, porcentaje de descuento, fecha de inicio y fecha de fin  
+   *Entonces* el sistema programa la activación y desactivación automática de la promoción mediante Edge Functions, la muestra destacada en el menú durante su vigencia y la incluye en las sugerencias del chatbot
+
+*Prioridad:* P1  
+*Estimación:* 8 puntos
+
+---
+
+## HU-15: Chatbot para cobranza y confirmación de pago
+
+*Declaración:*
+
+* *YO COMO* cliente que está completando un pedido a través del chatbot
+* *QUIERO* que el chatbot me guíe en el proceso de pago mostrándome las opciones disponibles y confirmando mi transacción
+* *CON EL OBJETIVO* de completar todo el flujo de compra (pedido + pago) de forma conversacional sin salir del chat
+
+*Criterios de Aceptación:*
+
+1. *Dado que* el usuario ha confirmado los productos de su pedido a través del chatbot  
+   *Cuando* el chatbot muestra el resumen final con el total a pagar  
+   *Entonces* el chatbot presenta las opciones de pago disponibles (Yape/Plin QR, transferencia bancaria, pago contra entrega) con instrucciones claras para cada método
+
+2. *Dado que* el usuario selecciona "Yape/Plin" como método de pago en el chatbot  
+   *Cuando* el chatbot procesa la selección  
+   *Entonces* el sistema muestra el código QR y número de teléfono dentro de la conversación, solicita al usuario que adjunte la captura del comprobante y confirma la recepción del mismo
+
+3. *Dado que* el usuario selecciona "Pago contra entrega" en el chatbot  
+   *Cuando* el chatbot procesa la selección  
+   *Entonces* el sistema confirma el pedido directamente, informa al usuario el monto exacto que debe tener en efectivo, registra la orden y la envía al panel del pizzero automáticamente
+
+*Prioridad:* P1  
+*Estimación:* 5 puntos
+
+---
+
+## HU-16: Chatbot para consultas frecuentes y estado de pedido
+
+*Declaración:*
+
+* *YO COMO* cliente de la pizzería
+* *QUIERO* poder consultar al chatbot sobre el estado de mi pedido, horarios de atención, promociones vigentes y preguntas frecuentes
+* *CON EL OBJETIVO* de obtener respuestas inmediatas sin necesidad de llamar por teléfono o esperar atención humana
+
+*Criterios de Aceptación:*
+
+1. *Dado que* el usuario escribe al chatbot "¿Cuál es el estado de mi pedido?"  
+   *Cuando* el chatbot procesa la consulta  
+   *Entonces* el sistema identifica al usuario, busca su pedido más reciente en la base de datos y muestra el estado actual (en espera, en producción, en camino, etc.) con la hora del último cambio de estado
+
+2. *Dado que* el usuario pregunta al chatbot sobre horarios, ubicación o promociones  
+   *Cuando* el chatbot procesa la pregunta  
+   *Entonces* el sistema responde con la información actualizada almacenada en la base de datos, incluyendo horarios de atención, dirección del local, promociones vigentes y métodos de pago aceptados
+
+3. *Dado que* el chatbot no puede resolver la consulta del usuario  
+   *Cuando* detecta que la pregunta está fuera de su alcance o el usuario solicita hablar con una persona  
+   *Entonces* el chatbot informa al usuario que su consulta será derivada, registra el mensaje en la base de datos y notifica al administrador por correo electrónico para seguimiento manual
+
+*Prioridad:* P1  
+*Estimación:* 5 puntos
+
+---
+
+## HU-17: Historial de pedidos y reorden rápida
+
+*Declaración:*
+
+* *YO COMO* cliente recurrente de la pizzería
+* *QUIERO* acceder a mi historial completo de pedidos anteriores y poder repetir un pedido con un solo clic
+* *CON EL OBJETIVO* de ahorrar tiempo al reordenar mis productos favoritos y tener un registro de todas mis compras
+
+*Criterios de Aceptación:*
+
+1. *Dado que* el usuario accede a la sección "Mis Pedidos" en su perfil  
+   *Cuando* la página se carga  
+   *Entonces* el sistema muestra el historial completo de pedidos ordenados por fecha (más reciente primero) con: número de pedido, fecha, estado, detalle de productos, monto total y método de pago utilizado
+
+2. *Dado que* el usuario desea repetir un pedido anterior  
+   *Cuando* presiona el botón "Volver a pedir" en un pedido del historial  
+   *Entonces* el sistema agrega automáticamente todos los productos de ese pedido al carrito actual con las mismas personalizaciones, verifica la disponibilidad y precios actuales, y notifica si algún producto ya no está disponible o cambió de precio
+
+3. *Dado que* el usuario desea ver el detalle de un pedido específico  
+   *Cuando* hace clic en un pedido del historial  
+   *Entonces* el sistema muestra el detalle completo incluyendo: productos con personalizaciones, dirección de entrega utilizada, método de pago, tiempos de cada etapa (pedido, preparación, envío, entrega) y calificación otorgada
+
+*Prioridad:* P1  
+*Estimación:* 5 puntos
+
+---
+
+## HU-18: Sistema de calificación y reseñas
+
+*Declaración:*
+
+* *YO COMO* cliente que ha recibido su pedido
+* *QUIERO* calificar la experiencia de mi pedido (calidad de la pizza, tiempo de entrega, servicio general) y dejar una reseña
+* *CON EL OBJETIVO* de compartir mi opinión, ayudar a otros clientes en su decisión y contribuir a la mejora del servicio de la pizzería
+
+*Criterios de Aceptación:*
+
+1. *Dado que* el pedido del cliente ha sido marcado como "Entregado"  
+   *Cuando* el cliente accede a la sección "Mis Pedidos" y selecciona el pedido entregado  
+   *Entonces* el sistema muestra un formulario de calificación con: estrellas del 1 al 5 para calidad del producto, tiempo de entrega y servicio general, un campo de texto para comentarios opcionales y el botón "Enviar calificación"
+
+2. *Dado que* el cliente completa la calificación con estrellas y opcionalmente un comentario  
+   *Cuando* presiona "Enviar calificación"  
+   *Entonces* el sistema registra la calificación en la base de datos, actualiza el promedio de calificación de la pizzería, muestra un mensaje de agradecimiento y, si la calificación es menor a 3 estrellas, una Edge Function envía un correo al administrador para seguimiento
+
+3. *Dado que* un cliente potencial navega por el menú  
+   *Cuando* visualiza un producto específico  
+   *Entonces* el sistema muestra el promedio de calificación del producto, el número total de reseñas y las últimas 5 reseñas con nombre del cliente (parcialmente oculto), calificación y comentario

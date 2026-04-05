@@ -191,6 +191,39 @@ Content-Type: application/json
 
 ---
 
+## PASO 8: Configurar notificaciones a cocina (Telegram)
+
+El flujo envía automáticamente un mensaje a Telegram cuando llega un pedido nuevo.
+
+1. En Telegram, busca `@BotFather` y crea un bot con `/newbot`
+2. Copia el token del bot
+3. Crea un grupo de Telegram para la cocina (ej: "Cocina Tata Pizza")
+4. Agrega el bot al grupo
+5. Obtén el Chat ID del grupo: visita `https://api.telegram.org/bot{TOKEN}/getUpdates` y busca el `id` negativo
+6. En n8n, configura las variables de entorno:
+   - `TELEGRAM_BOT_TOKEN` = token del bot
+   - `TELEGRAM_COOK_CHAT_ID` = ID del grupo (número negativo, ej: -1001234567890)
+
+Cuando llegue un pedido, la cocina recibirá:
+```
+NUEVO PEDIDO #5
+
+Cliente: Juan García
+Tel: 51987654321
+Entrega: delivery
+Dirección: Av. Larco 123, Miraflores
+
+Items:
+• 1x Pepperoni (Mediana)
+• 2x Coca-Cola 600ml (Pequeña)
+
+Nota: sin aceitunas
+
+Total: S/.46
+```
+
+---
+
 ## Futura integración Twilio (voz)
 
 Para agregar atención por llamadas:

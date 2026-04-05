@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useListMenuItems, useUpdateMenuItem, useCreateMenuItem, getListMenuItemsQueryKey } from "@workspace/api-client-react";
 import type { MenuItem, CreateMenuItemBody, UpdateMenuItemBody } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -19,7 +19,7 @@ export default function MenuPage() {
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
   const [isAddOpen, setIsAddOpen] = useState(false);
-  const [editingItem, setEditingItem] = useState<any>(null);
+  const [editingItem, setEditingItem] = useState<MenuItem | null>(null);
   
   const { data: menuItems, isLoading } = useListMenuItems();
   const queryClient = useQueryClient();
@@ -183,6 +183,17 @@ function ItemDialog({ open, onOpenChange, item, mode }: ItemDialogProps) {
   const [priceSmall, setPriceSmall] = useState(item?.priceSmall ? (item.priceSmall / 100).toString() : "");
   const [priceMedium, setPriceMedium] = useState(item?.priceMedium ? (item.priceMedium / 100).toString() : "");
   const [priceLarge, setPriceLarge] = useState(item?.priceLarge ? (item.priceLarge / 100).toString() : "");
+
+  useEffect(() => {
+    if (open) {
+      setName(item?.name || "");
+      setCategory(item?.category || "pizza");
+      setDescription(item?.description || "");
+      setPriceSmall(item?.priceSmall ? (item.priceSmall / 100).toString() : "");
+      setPriceMedium(item?.priceMedium ? (item.priceMedium / 100).toString() : "");
+      setPriceLarge(item?.priceLarge ? (item.priceLarge / 100).toString() : "");
+    }
+  }, [open, item]);
   
   const createMenu = useCreateMenuItem();
   const updateMenu = useUpdateMenuItem();
