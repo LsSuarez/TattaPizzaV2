@@ -5,6 +5,7 @@ import ordersRouter from "./orders";
 import customersRouter from "./customers";
 import statsRouter from "./stats";
 import webhookRouter from "./webhook";
+import portalRouter from "./portal";
 
 const router: IRouter = Router();
 
@@ -14,5 +15,6 @@ router.use(ordersRouter);
 router.use(customersRouter);
 router.use(statsRouter);
 router.use(webhookRouter);
+router.use("/portal", portalRouter);
 
 export default router;

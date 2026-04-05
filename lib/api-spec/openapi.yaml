@@ -2,8 +2,8 @@ openapi: 3.1.0
 info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
-  version: 0.1.0
-  description: Tata Pizza API - Sistema de automatización de pedidos
+  version: 0.2.0
+  description: Tata Pizza API - Sistema de automatización de pedidos con portal cliente
 servers:
   - url: /api
     description: Base API path
@@ -16,6 +16,12 @@ tags:
     description: Order management
   - name: customers
     description: Customer management
+  - name: customer-portal
+    description: Customer-facing portal endpoints (authenticated)
+  - name: addresses
+    description: Customer address management
+  - name: ratings
+    description: Order ratings
   - name: stats
     description: Statistics and dashboard data
   - name: webhook
@@ -26,7 +32,6 @@ paths:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -244,6 +249,68 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /orders/{id}/payment:
+    patch:
+      operationId: updateOrderPayment
+      tags: [orders]
+      summary: Update order payment (submit proof or verify)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateOrderPaymentBody"
+      responses:
+        "200":
+          description: Updated order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderWithItems"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /orders/{id}/rating:
+    post:
+      operationId: createOrderRating
+      tags: [ratings]
+      summary: Submit a rating for an order
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateRatingBody"
+      responses:
+        "201":
+          description: Rating submitted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Rating"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /customers:
     get:
       operationId: listCustomers
@@ -335,6 +402,258 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /customers/{id}/orders:
+    get:
+      operationId: getCustomerOrders
+      tags: [customers]
+      summary: Get orders for a specific customer
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Customer's orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OrderWithItems"
+
+  /portal/me:
+    get:
+      operationId: getMyProfile
+      tags: [customer-portal]
+      summary: Get authenticated customer profile
+      responses:
+        "200":
+          description: Customer profile or null if not linked
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomerProfile"
+        "401":
+          description: Unauthorized
+    post:
+      operationId: upsertMyProfile
+      tags: [customer-portal]
+      summary: Create or update customer profile for authenticated user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpsertProfileBody"
+      responses:
+        "200":
+          description: Customer profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomerProfile"
+        "401":
+          description: Unauthorized
+
+  /portal/orders:
+    get:
+      operationId: getMyOrders
+      tags: [customer-portal]
+      summary: Get authenticated customer's orders
+      responses:
+        "200":
+          description: Customer's orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OrderWithItems"
+        "401":
+          description: Unauthorized
+    post:
+      operationId: createMyOrder
+      tags: [customer-portal]
+      summary: Create an order for authenticated customer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateMyOrderBody"
+      responses:
+        "201":
+          description: Created order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderWithItems"
+        "401":
+          description: Unauthorized
+
+  /portal/orders/{id}:
+    get:
+      operationId: getMyOrder
+      tags: [customer-portal]
+      summary: Get a specific order for authenticated customer
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Order with items
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderWithItems"
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not found
+
+  /portal/orders/{id}/payment:
+    patch:
+      operationId: submitMyPayment
+      tags: [customer-portal]
+      summary: Submit payment proof for an order
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SubmitPaymentBody"
+      responses:
+        "200":
+          description: Updated order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderWithItems"
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not found
+
+  /portal/orders/{id}/rating:
+    post:
+      operationId: submitMyRating
+      tags: [customer-portal]
+      summary: Submit rating for a delivered order
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateRatingBody"
+      responses:
+        "201":
+          description: Rating submitted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Rating"
+        "401":
+          description: Unauthorized
+
+  /portal/addresses:
+    get:
+      operationId: getMyAddresses
+      tags: [addresses]
+      summary: Get authenticated customer's addresses
+      responses:
+        "200":
+          description: List of addresses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Address"
+        "401":
+          description: Unauthorized
+    post:
+      operationId: createMyAddress
+      tags: [addresses]
+      summary: Add a new address
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateAddressBody"
+      responses:
+        "201":
+          description: Created address
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Address"
+        "401":
+          description: Unauthorized
+
+  /portal/addresses/{id}:
+    patch:
+      operationId: updateMyAddress
+      tags: [addresses]
+      summary: Update an address
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateAddressBody"
+      responses:
+        "200":
+          description: Updated address
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Address"
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not found
+    delete:
+      operationId: deleteMyAddress
+      tags: [addresses]
+      summary: Delete an address
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not found
+
   /stats/dashboard:
     get:
       operationId: getDashboardStats
@@ -353,7 +672,6 @@ paths:
       operationId: whatsappWebhook
       tags: [webhook]
       summary: Webhook for n8n WhatsApp integration
-      description: Receives processed order data from n8n and creates an order
       requestBody:
         required: true
         content:
@@ -496,22 +814,35 @@ components:
           type: integer
         customerId:
           type: ["integer", "null"]
+        clerkUserId:
+          type: ["string", "null"]
         customerName:
           type: string
         customerPhone:
           type: string
+        customerEmail:
+          type: ["string", "null"]
         deliveryAddress:
           type: ["string", "null"]
         deliveryType:
           type: string
         status:
           type: string
+        paymentMethod:
+          type: ["string", "null"]
+        paymentStatus:
+          type: ["string", "null"]
+        paymentProofUrl:
+          type: ["string", "null"]
         total:
           type: integer
         notes:
           type: ["string", "null"]
         whatsappMessageId:
           type: ["string", "null"]
+        rating:
+          $ref: "#/components/schemas/Rating"
+          nullable: true
         createdAt:
           type: string
           format: date-time
@@ -565,10 +896,14 @@ components:
           type: string
         customerPhone:
           type: string
+        customerEmail:
+          type: ["string", "null"]
         deliveryAddress:
           type: ["string", "null"]
         deliveryType:
           type: string
+        paymentMethod:
+          type: ["string", "null"]
         notes:
           type: ["string", "null"]
         whatsappMessageId:
@@ -582,6 +917,26 @@ components:
         - customerPhone
         - items
 
+    CreateMyOrderBody:
+      type: object
+      properties:
+        deliveryAddress:
+          type: ["string", "null"]
+        deliveryType:
+          type: string
+        paymentMethod:
+          type: string
+        notes:
+          type: ["string", "null"]
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/CreateOrderItemBody"
+      required:
+        - deliveryType
+        - paymentMethod
+        - items
+
     UpdateOrderStatusBody:
       type: object
       properties:
@@ -592,13 +947,37 @@ components:
       required:
         - status
 
+    UpdateOrderPaymentBody:
+      type: object
+      properties:
+        paymentStatus:
+          type: string
+        paymentProofUrl:
+          type: ["string", "null"]
+      required:
+        - paymentStatus
+
+    SubmitPaymentBody:
+      type: object
+      properties:
+        paymentMethod:
+          type: string
+        paymentProofUrl:
+          type: ["string", "null"]
+      required:
+        - paymentMethod
+
     Customer:
       type: object
       properties:
         id:
           type: integer
+        clerkUserId:
+          type: ["string", "null"]
         name:
           type: string
+        email:
+          type: ["string", "null"]
         phone:
           type: string
         address:
@@ -618,11 +997,48 @@ components:
         - createdAt
         - updatedAt
 
+    CustomerProfile:
+      type: object
+      properties:
+        id:
+          type: ["integer", "null"]
+        clerkUserId:
+          type: ["string", "null"]
+        name:
+          type: ["string", "null"]
+        email:
+          type: ["string", "null"]
+        phone:
+          type: ["string", "null"]
+        address:
+          type: ["string", "null"]
+        isProfileComplete:
+          type: boolean
+      required:
+        - isProfileComplete
+
+    UpsertProfileBody:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: ["string", "null"]
+        phone:
+          type: string
+        address:
+          type: ["string", "null"]
+      required:
+        - name
+        - phone
+
     CreateCustomerBody:
       type: object
       properties:
         name:
           type: string
+        email:
+          type: ["string", "null"]
         phone:
           type: string
         address:
@@ -638,10 +1054,129 @@ components:
       properties:
         name:
           type: string
+        email:
+          type: ["string", "null"]
         address:
           type: ["string", "null"]
         notes:
           type: ["string", "null"]
+
+    Address:
+      type: object
+      properties:
+        id:
+          type: integer
+        customerId:
+          type: integer
+        clerkUserId:
+          type: ["string", "null"]
+        label:
+          type: string
+        address:
+          type: string
+        district:
+          type: ["string", "null"]
+        reference:
+          type: ["string", "null"]
+        instructions:
+          type: ["string", "null"]
+        isDefault:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - customerId
+        - label
+        - address
+        - isDefault
+        - createdAt
+        - updatedAt
+
+    CreateAddressBody:
+      type: object
+      properties:
+        label:
+          type: string
+        address:
+          type: string
+        district:
+          type: ["string", "null"]
+        reference:
+          type: ["string", "null"]
+        instructions:
+          type: ["string", "null"]
+        isDefault:
+          type: boolean
+      required:
+        - label
+        - address
+
+    UpdateAddressBody:
+      type: object
+      properties:
+        label:
+          type: string
+        address:
+          type: string
+        district:
+          type: ["string", "null"]
+        reference:
+          type: ["string", "null"]
+        instructions:
+          type: ["string", "null"]
+        isDefault:
+          type: boolean
+
+    Rating:
+      type: object
+      properties:
+        id:
+          type: integer
+        orderId:
+          type: integer
+        customerId:
+          type: ["integer", "null"]
+        clerkUserId:
+          type: ["string", "null"]
+        productRating:
+          type: integer
+        deliveryRating:
+          type: integer
+        serviceRating:
+          type: integer
+        comment:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - orderId
+        - productRating
+        - deliveryRating
+        - serviceRating
+        - createdAt
+
+    CreateRatingBody:
+      type: object
+      properties:
+        productRating:
+          type: integer
+        deliveryRating:
+          type: integer
+        serviceRating:
+          type: integer
+        comment:
+          type: ["string", "null"]
+      required:
+        - productRating
+        - deliveryRating
+        - serviceRating
 
     DashboardStats:
       type: object
