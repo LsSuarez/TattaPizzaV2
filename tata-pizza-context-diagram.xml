@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-04-10T00:00:00.000Z" agent="draw.io" version="21.0.0">
+  <diagram id="tata-pizza-context" name="Diagrama de Contexto - Tata Pizza">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2800" pageHeight="2000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!-- TÍTULO DEL DIAGRAMA -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <mxCell id="title" value="&lt;b&gt;Diagrama de Contexto del Sistema — Tata Pizza&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:12px;font-weight:normal'&gt;Sistema de automatización de pedidos con IA · Lima, Perú&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];strokeColor=none;fillColor=none;fontSize=18;fontStyle=1;fontColor=#1F3864;" vertex="1" parent="1">
+          <mxGeometry x="700" y="20" width="1000" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!-- FONDO SECCIÓN: COEXISTENCIA (izquierda) -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <mxCell id="bg-coex" value="" style="rounded=1;fillColor=#f5f5f5;strokeColor=#999999;strokeWidth=2;dashed=1;fontSize=14;fontStyle=1;arcSize=3;opacity=40;" vertex="1" parent="1">
+          <mxGeometry x="30" y="380" width="360" height="700" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl-coex" value="&lt;b&gt;Coexistencia&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];strokeColor=none;fillColor=none;fontSize=20;fontStyle=1;fontColor=#555555;" vertex="1" parent="1">
+          <mxGeometry x="50" y="390" width="200" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!-- FONDO SECCIÓN: EXTERNOS (derecha) -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <mxCell id="bg-ext" value="" style="rounded=1;fillColor=#f5f5f5;strokeColor=#999999;strokeWidth=2;dashed=1;fontSize=14;fontStyle=1;arcSize=3;opacity=40;" vertex="1" parent="1">
+          <mxGeometry x="1920" y="280" width="800" height="900" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl-ext" value="&lt;b&gt;Externos&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];strokeColor=none;fillColor=none;fontSize=20;fontStyle=1;fontColor=#555555;" vertex="1" parent="1">
+          <mxGeometry x="1940" y="290" width="200" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!-- PERSONAS / ACTORES (parte superior) -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+
+        <!-- P1: Cliente Final (WhatsApp) -->
+        <mxCell id="p1" value="&lt;b&gt;Cliente WhatsApp&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Person]&lt;/i&gt;&lt;br&gt;&lt;br&gt;Hace pedidos mediante&lt;br&gt;mensajes de WhatsApp&lt;br&gt;al bot de IA 24/7" style="shape=mxgraph.flowchart.actor;whiteSpace=wrap;html=1;fillColor=#083F75;strokeColor=#06315C;fontColor=#ffffff;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="80" y="100" width="160" height="200" as="geometry" />
+        </mxCell>
+
+        <!-- P2: Cliente Portal Web -->
+        <mxCell id="p2" value="&lt;b&gt;Cliente Portal Web&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Person]&lt;/i&gt;&lt;br&gt;&lt;br&gt;Navega el menú, hace&lt;br&gt;pedidos y paga con&lt;br&gt;tarjeta online" style="shape=mxgraph.flowchart.actor;whiteSpace=wrap;html=1;fillColor=#083F75;strokeColor=#06315C;fontColor=#ffffff;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="430" y="100" width="160" height="200" as="geometry" />
+        </mxCell>
+
+        <!-- P3: Dueño / Administrador -->
+        <mxCell id="p3" value="&lt;b&gt;Dueño / Admin&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Person]&lt;/i&gt;&lt;br&gt;&lt;br&gt;Gestiona el menú,&lt;br&gt;revisa pedidos, estadísticas&lt;br&gt;y cuadre de caja" style="shape=mxgraph.flowchart.actor;whiteSpace=wrap;html=1;fillColor=#083F75;strokeColor=#06315C;fontColor=#ffffff;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="80" width="160" height="200" as="geometry" />
+        </mxCell>
+
+        <!-- P4: Pizzero (Cocina) -->
+        <mxCell id="p4" value="&lt;b&gt;Pizzero / Cocina&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Person]&lt;/i&gt;&lt;br&gt;&lt;br&gt;Ve los pedidos en tiempo&lt;br&gt;real y marca el estado&lt;br&gt;de preparación" style="shape=mxgraph.flowchart.actor;whiteSpace=wrap;html=1;fillColor=#083F75;strokeColor=#06315C;fontColor=#ffffff;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="1430" y="100" width="160" height="200" as="geometry" />
+        </mxCell>
+
+        <!-- P5: Repartidor -->
+        <mxCell id="p5" value="&lt;b&gt;Repartidor&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Person]&lt;/i&gt;&lt;br&gt;&lt;br&gt;Ve pedidos listos para&lt;br&gt;delivery y actualiza&lt;br&gt;estado EN_CAMINO" style="shape=mxgraph.flowchart.actor;whiteSpace=wrap;html=1;fillColor=#083F75;strokeColor=#06315C;fontColor=#ffffff;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="1680" y="100" width="160" height="200" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!-- SISTEMA NÚCLEO: TATA PIZZA (centro azul) -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <mxCell id="core" value="&lt;b style='font-size:18px'&gt;Sistema Tata Pizza&lt;/b&gt;&lt;br&gt;&lt;i style='font-size:12px'&gt;[Software System]&lt;/i&gt;&lt;br&gt;&lt;br&gt;&lt;span style='font-size:11px'&gt;Plataforma integral de automatización&lt;br&gt;de pedidos de pizza con IA.&lt;br&gt;Reemplaza operadora humana (S/.800-1,200/mes)&lt;br&gt;con sistema IA a S/.25-42/mes.&lt;/span&gt;" style="rounded=1;fillColor=#1F3864;strokeColor=#1F3864;fontColor=#ffffff;fontSize=13;fontStyle=0;arcSize=3;verticalAlign=top;align=center;spacingTop=15;" vertex="1" parent="1">
+          <mxGeometry x="550" y="420" width="1100" height="800" as="geometry" />
+        </mxCell>
+
+        <!-- ─── PILARES INTERNOS DEL SISTEMA NÚCLEO ─── -->
+
+        <!-- Pilar 1: Portal Cliente Web -->
+        <mxCell id="s1" value="&lt;b&gt;1&lt;/b&gt; Portal Cliente Web&lt;br&gt;&lt;i style='font-size:9px'&gt;React + Vite · /customer/&lt;/i&gt;&lt;br&gt;&lt;span style='font-size:9px'&gt;Menú, carrito, pedidos, historial, Clerk auth&lt;/span&gt;" style="rounded=1;fillColor=#2E5F9A;strokeColor=#1a4070;fontColor=#ffffff;fontSize=11;arcSize=15;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="570" y="680" width="320" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- Pilar 2: Panel Admin -->
+        <mxCell id="s2" value="&lt;b&gt;2&lt;/b&gt; Panel Administrador&lt;br&gt;&lt;i style='font-size:9px'&gt;React + Vite · /admin/&lt;/i&gt;&lt;br&gt;&lt;span style='font-size:9px'&gt;KPIs, pipeline pedidos, gestión menú, stats&lt;/span&gt;" style="rounded=1;fillColor=#2E5F9A;strokeColor=#1a4070;fontColor=#ffffff;fontSize=11;arcSize=15;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="910" y="680" width="320" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- Pilar 3: Vista Cocina -->
+        <mxCell id="s3" value="&lt;b&gt;3&lt;/b&gt; Vista Cocina&lt;br&gt;&lt;i style='font-size:9px'&gt;React + Vite · /admin/cocina&lt;/i&gt;&lt;br&gt;&lt;span style='font-size:9px'&gt;Pedidos en tiempo real, auto-refresh 30s&lt;/span&gt;" style="rounded=1;fillColor=#2E5F9A;strokeColor=#1a4070;fontColor=#ffffff;fontSize=11;arcSize=15;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="570" y="775" width="320" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- Pilar 4: Vista Repartidor -->
+        <mxCell id="s4" value="&lt;b&gt;4&lt;/b&gt; Vista Repartidor&lt;br&gt;&lt;i style='font-size:9px'&gt;React + Vite · /admin/repartidor&lt;/i&gt;&lt;br&gt;&lt;span style='font-size:9px'&gt;Pedidos LISTO→EN_CAMINO→ENTREGADO&lt;/span&gt;" style="rounded=1;fillColor=#2E5F9A;strokeColor=#1a4070;fontColor=#ffffff;fontSize=11;arcSize=15;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="910" y="775" width="320" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- Pilar 5: Cuadre de Caja -->
+        <mxCell id="s5" value="&lt;b&gt;5&lt;/b&gt; Cuadre de Caja&lt;br&gt;&lt;i style='font-size:9px'&gt;React + Vite · /admin/caja&lt;/i&gt;&lt;br&gt;&lt;span style='font-size:9px'&gt;Facturación, efectivo, digital, desglose métodos&lt;/span&gt;" style="rounded=1;fillColor=#2E5F9A;strokeColor=#1a4070;fontColor=#ffffff;fontSize=11;arcSize=15;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="570" y="870" width="320" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- Pilar 6: API REST -->
+        <mxCell id="s6" value="&lt;b&gt;6&lt;/b&gt; API REST (Express.js)&lt;br&gt;&lt;i style='font-size:9px'&gt;Node.js · Puerto 8080&lt;/i&gt;&lt;br&gt;&lt;span style='font-size:9px'&gt;/api/menu · /api/orders · /api/portal · /api/payments&lt;/span&gt;" style="rounded=1;fillColor=#2E5F9A;strokeColor=#1a4070;fontColor=#ffffff;fontSize=11;arcSize=15;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="910" y="870" width="320" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- Pilar 7: Base de Datos -->
+        <mxCell id="s7" value="&lt;b&gt;7&lt;/b&gt; Base de Datos PostgreSQL&lt;br&gt;&lt;i style='font-size:9px'&gt;Drizzle ORM · Tablas: orders, menu_items, customers, addresses&lt;/i&gt;&lt;br&gt;&lt;span style='font-size:9px'&gt;Pedidos, clientes, menú, estado del pipeline completo&lt;/span&gt;" style="rounded=1;fillColor=#2E5F9A;strokeColor=#1a4070;fontColor=#ffffff;fontSize=11;arcSize=15;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="570" y="965" width="320" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- Pilar 8: Automatización n8n + IA -->
+        <mxCell id="s8" value="&lt;b&gt;8&lt;/b&gt; Motor IA / Automatización (n8n + GPT-4o-mini)&lt;br&gt;&lt;i style='font-size:9px'&gt;16 nodos · Webhook Meta → GPT-4o-mini → API → WhatsApp&lt;/i&gt;&lt;br&gt;&lt;span style='font-size:9px'&gt;Recibe mensaje → entiende pedido → crea orden → confirma por WhatsApp&lt;/span&gt;" style="rounded=1;fillColor=#2E5F9A;strokeColor=#1a4070;fontColor=#ffffff;fontSize=11;arcSize=15;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="910" y="965" width="320" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- Pilar 9: Pipeline de Pedidos -->
+        <mxCell id="s9" value="&lt;b&gt;9&lt;/b&gt; Pipeline de Pedidos (5 etapas)&lt;br&gt;&lt;i style='font-size:9px'&gt;Kanban: RECIBIDO → EN_PREPARACIÓN → LISTO → EN_CAMINO → ENTREGADO&lt;/i&gt;" style="rounded=1;fillColor=#2E5F9A;strokeColor=#1a4070;fontColor=#ffffff;fontSize=11;arcSize=15;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="570" y="1060" width="320" height="65" as="geometry" />
+        </mxCell>
+
+        <!-- Pilar 10: Pasarela Izipay -->
+        <mxCell id="s10" value="&lt;b&gt;10&lt;/b&gt; Pasarela de Pagos Izipay&lt;br&gt;&lt;i style='font-size:9px'&gt;/api/portal/payments · Visa, Mastercard, Amex&lt;/i&gt;&lt;br&gt;&lt;span style='font-size:9px'&gt;Create session → Formulario → IPN webhook → PAID&lt;/span&gt;" style="rounded=1;fillColor=#2E5F9A;strokeColor=#1a4070;fontColor=#ffffff;fontSize=11;arcSize=15;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="910" y="1060" width="320" height="65" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!-- COEXISTENCIA (izquierda) -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+
+        <!-- CO1: N8N Cloud -->
+        <mxCell id="co1" value="&lt;b&gt;N8N Cloud&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Software System]&lt;/i&gt;&lt;br&gt;&lt;br&gt;Motor de automatización&lt;br&gt;de flujos. Orquesta el bot&lt;br&gt;de WhatsApp con 16 nodos.&lt;br&gt;&lt;br&gt;&lt;i style='font-size:9px'&gt;~$5/mes (Starter)&lt;/i&gt;" style="rounded=1;fillColor=#555555;strokeColor=#333333;fontColor=#ffffff;fontSize=11;arcSize=5;align=center;verticalAlign=top;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="60" y="440" width="250" height="180" as="geometry" />
+        </mxCell>
+
+        <!-- CO2: WhatsApp Business Channel -->
+        <mxCell id="co2" value="&lt;b&gt;WhatsApp Business&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Canal de Mensajería]&lt;/i&gt;&lt;br&gt;&lt;br&gt;Canal principal de pedidos.&lt;br&gt;Número registrado en&lt;br&gt;Meta Business.&lt;br&gt;&lt;br&gt;&lt;i style='font-size:9px'&gt;1,000 conv gratis/mes&lt;/i&gt;" style="rounded=1;fillColor=#555555;strokeColor=#333333;fontColor=#ffffff;fontSize=11;arcSize=5;align=center;verticalAlign=top;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="60" y="680" width="250" height="180" as="geometry" />
+        </mxCell>
+
+        <!-- CO3: Yape / Plin -->
+        <mxCell id="co3" value="&lt;b&gt;Yape / Plin&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Sistema de Pagos]&lt;/i&gt;&lt;br&gt;&lt;br&gt;Pago móvil manual.&lt;br&gt;Cliente adjunta captura&lt;br&gt;del comprobante.&lt;br&gt;&lt;br&gt;&lt;i style='font-size:9px'&gt;Sin costo de integración&lt;/i&gt;" style="rounded=1;fillColor=#555555;strokeColor=#333333;fontColor=#ffffff;fontSize=11;arcSize=5;align=center;verticalAlign=top;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="60" y="920" width="250" height="165" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!-- EXTERNOS (derecha) -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+
+        <!-- E1: Meta WhatsApp API -->
+        <mxCell id="e1" value="&lt;b&gt;Meta WhatsApp API&lt;/b&gt;&lt;br&gt;&lt;i&gt;[External API]&lt;/i&gt;&lt;br&gt;&lt;br&gt;API oficial de Meta para&lt;br&gt;enviar y recibir mensajes&lt;br&gt;de WhatsApp Business.&lt;br&gt;Requiere número aprobado&lt;br&gt;y token Bearer.&lt;br&gt;&lt;br&gt;&lt;i style='font-size:9px'&gt;Webhook: POST /whatsapp-tata-pizza&lt;/i&gt;" style="rounded=1;fillColor=#444444;strokeColor=#222222;fontColor=#ffffff;fontSize=11;arcSize=5;align=center;verticalAlign=top;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="1940" y="340" width="280" height="200" as="geometry" />
+        </mxCell>
+
+        <!-- E2: OpenAI GPT-4o-mini -->
+        <mxCell id="e2" value="&lt;b&gt;OpenAI GPT-4o-mini&lt;/b&gt;&lt;br&gt;&lt;i&gt;[AI Service]&lt;/i&gt;&lt;br&gt;&lt;br&gt;Procesa lenguaje natural&lt;br&gt;de los clientes. Interpreta&lt;br&gt;pedidos, responde consultas,&lt;br&gt;entiende variaciones del menú.&lt;br&gt;&lt;br&gt;&lt;i style='font-size:9px'&gt;~S/.4-8/mes · API Key requerida&lt;/i&gt;" style="rounded=1;fillColor=#444444;strokeColor=#222222;fontColor=#ffffff;fontSize=11;arcSize=5;align=center;verticalAlign=top;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="1940" y="570" width="280" height="200" as="geometry" />
+        </mxCell>
+
+        <!-- E3: Izipay -->
+        <mxCell id="e3" value="&lt;b&gt;Izipay&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Payment Gateway · Peru]&lt;/i&gt;&lt;br&gt;&lt;br&gt;Pasarela de pagos peruana.&lt;br&gt;Procesa Visa, Mastercard, Amex.&lt;br&gt;Integración via REST API +&lt;br&gt;IPN webhook para confirmación.&lt;br&gt;&lt;br&gt;&lt;i style='font-size:9px'&gt;micuentaweb.pe · SHOP_ID + API_KEY&lt;/i&gt;" style="rounded=1;fillColor=#444444;strokeColor=#222222;fontColor=#ffffff;fontSize=11;arcSize=5;align=center;verticalAlign=top;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="1940" y="800" width="280" height="200" as="geometry" />
+        </mxCell>
+
+        <!-- E4: Clerk Auth -->
+        <mxCell id="e4" value="&lt;b&gt;Clerk Auth&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Auth Service]&lt;/i&gt;&lt;br&gt;&lt;br&gt;Autenticación de usuarios&lt;br&gt;del portal web. Google OAuth,&lt;br&gt;email/password. Protege rutas&lt;br&gt;del portal del cliente.&lt;br&gt;&lt;br&gt;&lt;i style='font-size:9px'&gt;PUBLISHABLE_KEY + SECRET_KEY&lt;/i&gt;" style="rounded=1;fillColor=#444444;strokeColor=#222222;fontColor=#ffffff;fontSize=11;arcSize=5;align=center;verticalAlign=top;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="2260" y="340" width="280" height="200" as="geometry" />
+        </mxCell>
+
+        <!-- E5: Render / Replit (Hosting) -->
+        <mxCell id="e5" value="&lt;b&gt;Render / Replit Cloud&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Cloud Hosting]&lt;/i&gt;&lt;br&gt;&lt;br&gt;Hospedaje de la API REST,&lt;br&gt;frontends y base de datos&lt;br&gt;PostgreSQL. SSL automático.&lt;br&gt;&lt;br&gt;&lt;i style='font-size:9px'&gt;Replit Publish: 1 clic&lt;/i&gt;" style="rounded=1;fillColor=#444444;strokeColor=#222222;fontColor=#ffffff;fontSize=11;arcSize=5;align=center;verticalAlign=top;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="2260" y="570" width="280" height="200" as="geometry" />
+        </mxCell>
+
+        <!-- E6: BCP / Transferencia Bancaria -->
+        <mxCell id="e6" value="&lt;b&gt;BCP (Banco de Crédito)&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Canal de Pago]&lt;/i&gt;&lt;br&gt;&lt;br&gt;Transferencias bancarias.&lt;br&gt;Cliente sube comprobante.&lt;br&gt;Validación manual por dueño.&lt;br&gt;&lt;br&gt;&lt;i style='font-size:9px'&gt;Sin costo de integración API&lt;/i&gt;" style="rounded=1;fillColor=#444444;strokeColor=#222222;fontColor=#ffffff;fontSize=11;arcSize=5;align=center;verticalAlign=top;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="2260" y="800" width="280" height="180" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!-- SUPUESTOS (caja inferior izquierda) -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <mxCell id="bg-supuestos" value="" style="rounded=1;fillColor=#fff3cd;strokeColor=#f0ad4e;strokeWidth=2;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="30" y="1170" width="490" height="250" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl-supuestos" value="&lt;b&gt;⚠️ Supuestos del Sistema&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];strokeColor=none;fillColor=none;fontSize=14;fontStyle=1;fontColor=#856404;" vertex="1" parent="1">
+          <mxGeometry x="50" y="1180" width="300" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="supuestos" value="• Número de WhatsApp registrado y aprobado en Meta Business&lt;br&gt;• Conexión a internet disponible para API y n8n&lt;br&gt;• Cuenta OpenAI activa con saldo (API Key vigente)&lt;br&gt;• Cuenta Izipay activa con credenciales de producción&lt;br&gt;• Base de datos PostgreSQL disponible y migrada&lt;br&gt;• Personal capacitado en el uso de los paneles (cocina, repartidor)&lt;br&gt;• Menú actualizado en base de datos antes de activar el bot&lt;br&gt;• Número Yape/Plin del negocio actualizado en el checkout" style="text;html=1;align=left;verticalAlign=top;resizable=0;points=[];strokeColor=none;fillColor=none;fontSize=11;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="50" y="1218" width="460" height="190" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!-- PROBLEMAS RESUELTOS (caja inferior centro) -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <mxCell id="bg-problemas" value="" style="rounded=1;fillColor=#d4edda;strokeColor=#28a745;strokeWidth=2;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="560" y="1310" width="580" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl-problemas" value="&lt;b&gt;✅ Problemas Resueltos&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];strokeColor=none;fillColor=none;fontSize=14;fontStyle=1;fontColor=#155724;" vertex="1" parent="1">
+          <mxGeometry x="580" y="1320" width="280" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="problemas" value="• &lt;b&gt;Costo de operadora&lt;/b&gt;: S/.800-1,200/mes → S/.25-42/mes (ahorro &gt;90%)&lt;br&gt;• &lt;b&gt;Disponibilidad 24/7&lt;/b&gt;: pedidos sin operador humano en turno&lt;br&gt;• &lt;b&gt;Errores en pedidos&lt;/b&gt;: la IA confirma y valida cada ítem antes de crear la orden&lt;br&gt;• &lt;b&gt;Trazabilidad&lt;/b&gt;: 5 etapas del pipeline visibles en tiempo real&lt;br&gt;• &lt;b&gt;Pagos dispersos&lt;/b&gt;: Yape, Transferencia, Efectivo e Izipay en un solo sistema&lt;br&gt;• &lt;b&gt;Control de caja&lt;/b&gt;: cuadre diario automático con desglose por método de pago" style="text;html=1;align=left;verticalAlign=top;resizable=0;points=[];strokeColor=none;fillColor=none;fontSize=11;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="580" y="1355" width="550" height="165" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!-- COSTOS (caja inferior derecha) -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <mxCell id="bg-costos" value="" style="rounded=1;fillColor=#cce5ff;strokeColor=#004085;strokeWidth=2;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="1200" y="1310" width="450" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl-costos" value="&lt;b&gt;💰 Costo Total del Sistema / Mes&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];strokeColor=none;fillColor=none;fontSize=13;fontStyle=1;fontColor=#004085;" vertex="1" parent="1">
+          <mxGeometry x="1220" y="1320" width="400" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="costos" value="• n8n Starter: S/.19/mes&lt;br&gt;• OpenAI GPT-4o-mini: S/.4-8/mes&lt;br&gt;• Meta WhatsApp API: S/.0 (1,000 conv gratis)&lt;br&gt;• Izipay: comisión por transacción (~3-4%)&lt;br&gt;• Replit/Render Hosting: S/.0-15/mes&lt;br&gt;• Clerk Auth: S/.0 (plan gratuito)&lt;br&gt;&lt;br&gt;&lt;b&gt;TOTAL: ~S/.25-42/mes&lt;/b&gt; vs S/.800-1,200 operadora" style="text;html=1;align=left;verticalAlign=top;resizable=0;points=[];strokeColor=none;fillColor=none;fontSize=11;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="1220" y="1355" width="420" height="165" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!-- RELACIONES / FLECHAS -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+
+        <!-- P1 (Cliente WhatsApp) → Core -->
+        <mxCell id="r1" value="Envía mensajes de texto&lt;br&gt;con su pedido al bot" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.15;entryY=0;entryDx=0;entryDy=0;fontColor=#333333;strokeColor=#1F3864;" edge="1" source="p1" target="core" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- P2 (Cliente Portal) → Core -->
+        <mxCell id="r2" value="Navega el menú y realiza&lt;br&gt;pedidos con pago online" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.3;entryY=0;entryDx=0;entryDy=0;fontColor=#333333;strokeColor=#1F3864;" edge="1" source="p2" target="core" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- P3 (Dueño) → Core -->
+        <mxCell id="r3" value="Gestiona menú, pedidos&lt;br&gt;y finanzas" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontColor=#333333;strokeColor=#1F3864;" edge="1" source="p3" target="core" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- P4 (Pizzero) → Core -->
+        <mxCell id="r4" value="Ve pedidos en tiempo real&lt;br&gt;y actualiza estado" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.7;entryY=0;entryDx=0;entryDy=0;fontColor=#333333;strokeColor=#1F3864;" edge="1" source="p4" target="core" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- P5 (Repartidor) → Core -->
+        <mxCell id="r5" value="Gestiona entregas&lt;br&gt;a domicilio" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.85;entryY=0;entryDx=0;entryDy=0;fontColor=#333333;strokeColor=#1F3864;" edge="1" source="p5" target="core" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Core ↔ N8N Cloud -->
+        <mxCell id="r6" value="Delega automatización&lt;br&gt;de conversaciones" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;exitX=0;exitY=0.3;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fontColor=#333333;strokeColor=#555555;" edge="1" source="core" target="co1" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Core ↔ WhatsApp Business -->
+        <mxCell id="r7" value="Canal de atención&lt;br&gt;a clientes" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fontColor=#333333;strokeColor=#555555;" edge="1" source="core" target="co2" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Core ↔ Yape/Plin -->
+        <mxCell id="r7b" value="Pagos manuales&lt;br&gt;validados por dueño" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;exitX=0;exitY=0.7;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fontColor=#333333;strokeColor=#555555;" edge="1" source="core" target="co3" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Core → Meta WhatsApp API -->
+        <mxCell id="r8" value="Envía respuestas y&lt;br&gt;confirmaciones de pedido" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontColor=#333333;strokeColor=#444444;" edge="1" source="core" target="e1" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- N8N → OpenAI -->
+        <mxCell id="r9" value="Procesa lenguaje natural&lt;br&gt;del cliente" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontColor=#333333;strokeColor=#444444;dashed=1;" edge="1" source="co1" target="e2" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Core → Izipay -->
+        <mxCell id="r10" value="Crea sesión de pago&lt;br&gt;con tarjeta (REST API)" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontColor=#333333;strokeColor=#444444;" edge="1" source="core" target="e3" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Core → Clerk -->
+        <mxCell id="r11" value="Autentica usuarios&lt;br&gt;del portal cliente" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;exitX=1;exitY=0.35;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontColor=#333333;strokeColor=#444444;" edge="1" source="core" target="e4" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Core → Render/Replit -->
+        <mxCell id="r12" value="Alojado y ejecutado&lt;br&gt;en cloud" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;exitX=1;exitY=0.45;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontColor=#333333;strokeColor=#444444;" edge="1" source="core" target="e5" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Core → BCP -->
+        <mxCell id="r13" value="Datos bancarios para&lt;br&gt;transferencias manuales" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;exitX=1;exitY=0.65;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontColor=#333333;strokeColor=#444444;" edge="1" source="core" target="e6" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Meta API → P1 (respuesta al cliente) -->
+        <mxCell id="r14" value="Notifica confirmación&lt;br&gt;del pedido al cliente" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;fontColor=#333333;strokeColor=#444444;dashed=1;" edge="1" source="e1" target="p1" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- N8N → Meta WhatsApp API -->
+        <mxCell id="r15" value="Envía mensajes via&lt;br&gt;API de Meta" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;exitX=1;exitY=0.3;exitDx=0;exitDy=0;entryX=0;entryY=0.8;entryDx=0;entryDy=0;fontColor=#333333;strokeColor=#555555;dashed=1;" edge="1" source="co1" target="e1" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!-- LEYENDA DE ESTADOS DEL PIPELINE -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <mxCell id="bg-pipeline" value="" style="rounded=1;fillColor=#e8e8ff;strokeColor=#6666cc;strokeWidth=2;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="1700" y="1310" width="500" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl-pipeline" value="&lt;b&gt;📦 Pipeline de Pedidos (5 Etapas)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];strokeColor=none;fillColor=none;fontSize=13;fontStyle=1;fontColor=#333399;" vertex="1" parent="1">
+          <mxGeometry x="1720" y="1320" width="380" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="pipeline" value="🟡 &lt;b&gt;RECIBIDO&lt;/b&gt; → pedido entra al sistema&lt;br&gt;🔵 &lt;b&gt;EN_PREPARACIÓN&lt;/b&gt; → cocina tomó el pedido&lt;br&gt;🟢 &lt;b&gt;LISTO&lt;/b&gt; → pizzero entrega al repartidor&lt;br&gt;🛵 &lt;b&gt;EN_CAMINO&lt;/b&gt; → repartidor en ruta&lt;br&gt;✅ &lt;b&gt;ENTREGADO&lt;/b&gt; → cliente recibió el pedido" style="text;html=1;align=left;verticalAlign=top;resizable=0;points=[];strokeColor=none;fillColor=none;fontSize=12;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="1720" y="1358" width="460" height="140" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
